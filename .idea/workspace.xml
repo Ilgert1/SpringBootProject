@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="56962b2a-d04b-453b-bff8-bbfdad8662ef" name="Changes" comment="commmit test">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/Command.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/Nobsv2Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/Nobsv2Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/Query.java" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/Query.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/exceptions/ProductNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/exceptions/ProductNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/ProductRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/services/GetProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/services/GetProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/services/UpdateProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/services/UpdateProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/validators/ProductValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/product/validators/ProductValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nobsv2/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/nobsv2/src/main/resources/application.properties" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/nobsv2" />
+    <option name="ROOT_SYNC" value="SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Ilgert1&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Ilgert1/Spring-Boot-Project.git&quot;,
+    &quot;accountId&quot;: &quot;b5b6cf85-4df9-43b2-8680-fd0637121ae3&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/nobsv2/src/main/java/com/example/nobsv2/security/CustomUser.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2sh95cT3LxXh0LVo5DJj6XtQkkU" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Notification.DisplayName-DoNotAsk-Database detector": "Database detector",
+    "Notification.DoNotAsk-Database detector": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.Nobsv2Application.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/ilgertshehaj/Desktop/GitHub",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.3643678",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="Nobsv2Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="nobsv2" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.nobsv2.Nobsv2Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="56962b2a-d04b-453b-bff8-bbfdad8662ef" name="Changes" comment="" />
+      <created>1731041079404</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731041079404</updated>
+      <workItem from="1731041080651" duration="49000" />
+      <workItem from="1738896757486" duration="365000" />
+      <workItem from="1738897669506" duration="749000" />
+      <workItem from="1738898423970" duration="938000" />
+      <workItem from="1738899366732" duration="1365000" />
+      <workItem from="1738960810859" duration="58000" />
+      <workItem from="1738985052993" duration="489000" />
+      <workItem from="1739053124446" duration="5777000" />
+      <workItem from="1739074614911" duration="64000" />
+      <workItem from="1739081289551" duration="1204000" />
+      <workItem from="1739145574925" duration="1873000" />
+      <workItem from="1739847956791" duration="2257000" />
+      <workItem from="1739902813024" duration="8484000" />
+      <workItem from="1739987026157" duration="2952000" />
+      <workItem from="1740076449563" duration="77000" />
+      <workItem from="1740676704550" duration="87000" />
+      <workItem from="1742257791651" duration="4168000" />
+      <workItem from="1742413519539" duration="17000" />
+      <workItem from="1742413570462" duration="47000" />
+      <workItem from="1742433287606" duration="4340000" />
+      <workItem from="1742867350827" duration="57000" />
+      <workItem from="1756925485807" duration="66000" />
+      <workItem from="1759781739614" duration="1144000" />
+      <workItem from="1760330105423" duration="153000" />
+      <workItem from="1760407410354" duration="616000" />
+      <workItem from="1760408254006" duration="1300000" />
+      <workItem from="1760557800166" duration="2913000" />
+      <workItem from="1760582852451" duration="882000" />
+      <workItem from="1760632539183" duration="4064000" />
+      <workItem from="1760643055923" duration="1030000" />
+      <workItem from="1760646115292" duration="2105000" />
+      <workItem from="1760658995698" duration="576000" />
+      <workItem from="1760659578394" duration="6969000" />
+      <workItem from="1760672128749" duration="23000" />
+      <workItem from="1760760702694" duration="2708000" />
+      <workItem from="1760832878901" duration="1068000" />
+      <workItem from="1760840350970" duration="9581000" />
+      <workItem from="1761000602210" duration="589000" />
+    </task>
+    <task id="LOCAL-00001" summary="testing">
+      <option name="closed" value="true" />
+      <created>1738898454913</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1738898454913</updated>
+    </task>
+    <task id="LOCAL-00002" summary="commmit test">
+      <option name="closed" value="true" />
+      <created>1738985356381</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1738985356381</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="testing" />
+    <MESSAGE value="commmit test" />
+    <option name="LAST_COMMIT_MESSAGE" value="commmit test" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="org.hibernate.HibernateException" package="org.hibernate" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
