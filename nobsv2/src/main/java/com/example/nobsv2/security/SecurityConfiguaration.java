@@ -28,7 +28,7 @@ public class SecurityConfiguaration {
             "/auth/login",
             "/auth/refresh",
             "/health",
-            "createnewuser",
+            "/createnewuser",
     };
 
     // Swagger/OpenAPI documentation endpoints
@@ -72,7 +72,13 @@ public class SecurityConfiguaration {
     @Bean
     CorsConfigurationSource corsSource() {
         CorsConfiguration c = new CorsConfiguration();
-        c.setAllowedOrigins(List.of(System.getProperty("cors.allowedOrigins", "http://localhost:3000")));
+
+        String allowedOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
+        if (allowedOrigins == null) {
+            allowedOrigins = "http://localhost:3000";
+        }
+        c.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+
         c.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         c.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"));
         c.setAllowCredentials(true);
