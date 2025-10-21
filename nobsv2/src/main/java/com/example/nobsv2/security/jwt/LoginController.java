@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class LoginController {
 
     private final AuthenticationManager manager;
@@ -49,7 +48,7 @@ public class LoginController {
     private Cookie cookie(String name, String value, int maxAge) {
         Cookie c = new Cookie(name, value);
         c.setHttpOnly(true);
-        c.setSecure(false); // set to true in prod (HTTPS)
+        c.setSecure(true); // set to true in prod (HTTPS)
         c.setPath("/");
         c.setMaxAge(maxAge);
         c.setAttribute("SameSite", "Lax");
