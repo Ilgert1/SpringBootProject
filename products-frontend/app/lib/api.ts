@@ -1,6 +1,6 @@
 // lib/api.ts
 export async function api<T = any>(path: string, init: RequestInit = {}) {
-    const base = process.env.NEXT_PUBLIC_API_URL!;
+    const base = process.env.NEXT_PUBLIC_API_URL || "https://springbootproject-production-9187.up.railway.app";
     const method = (init.method ?? "GET").toUpperCase();
 
     // Build headers but only set Content-Type if you actually send a body
