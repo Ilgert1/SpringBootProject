@@ -1,0 +1,11 @@
+.btn{
+    padding: 0.3rem 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+    transition: background 0.2s ease;
+}
+
+.btn:hover{
+    background: #f2f2f2;;
+}
