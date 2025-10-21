@@ -73,11 +73,10 @@ public class SecurityConfiguaration {
     CorsConfigurationSource corsSource() {
         CorsConfiguration c = new CorsConfiguration();
 
-        String allowedOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
-        if (allowedOrigins == null) {
-            allowedOrigins = "http://localhost:3000";
-        }
-        c.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+        c.setAllowedOriginPatterns(List.of(
+                "http://localhost:3000",
+                "https://*.vercel.app"
+        ));
 
         c.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         c.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"));
