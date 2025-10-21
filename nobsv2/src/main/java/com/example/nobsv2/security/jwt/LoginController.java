@@ -48,10 +48,10 @@ public class LoginController {
     private Cookie cookie(String name, String value, int maxAge) {
         Cookie c = new Cookie(name, value);
         c.setHttpOnly(true);
-        c.setSecure(true); // set to true in prod (HTTPS)
+        c.setSecure(true);
         c.setPath("/");
         c.setMaxAge(maxAge);
-        c.setAttribute("SameSite", "Lax");
+        c.setAttribute("SameSite", "None");  // Changed from "Lax"
         return c;
     }
 
