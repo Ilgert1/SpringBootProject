@@ -17,12 +17,16 @@ type Props = {
     onChangeEditName: (v: string) => void;
     onChangeEditDescription: (v: string) => void;
     onDelete: (id: number) => void;
+
+    addingToCart: number | null;
+    onAddToCart: (productId: number) => void;
 };
 
 export default function ProductItem({
                                         p, isSuperuser, editingId, editName, editDescription,
                                         updating, deletingId, onStartEdit, onCancelEdit, onSubmitEdit,
                                         onChangeEditName, onChangeEditDescription, onDelete,
+                                        addingToCart,onAddToCart
                                     }: Props) {
     const isEditing = isSuperuser && editingId === p.id;
 
@@ -42,6 +46,16 @@ export default function ProductItem({
             ) : (
                 <>
                     <strong>{p.name}</strong>{p.description ? ` — ${p.description}` : ""}
+                    {/*Add to cart button for all users*/}
+                    <button
+                        onClick={() => onAddToCart(p.id)}
+                        disabled={addingToCart === p.id}
+                        className="ml-4 mt-2 px-3 py-1 rounded-lg border border-green-700 text-green-200
+                                   transition-colors duration-200 hover:bg-green-900 hover:border-green-500
+                                   disabled:opacity-50"
+                        >
+                        {addingToCart === p.id ? "Adding..." : "Add to Cart"}
+                    </button>
                     {isSuperuser && (
                         <div className="flex gap-2 mt-1">
                             <button

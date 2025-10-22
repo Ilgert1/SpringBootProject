@@ -16,6 +16,10 @@ type Props = {
     onChangeEditName: (v: string) => void;
     onChangeEditDescription: (v: string) => void;
     onDelete: (id: number) => void;
+
+    //New adding to cart
+    addingToCart: number | null;
+    onAddToCart: (productId: number) => void;
 };
 
 export default function ProductList(props: Props) {
@@ -23,10 +27,12 @@ export default function ProductList(props: Props) {
     if (!products.length) return <p>No products found.</p>;
 
     return (
-        <ol className="mt-4 leading-relaxed">
-            {products.map((p) => (
-                <ProductItem key={p.id} p={p} {...props} />
-            ))}
-        </ol>
+        <>
+            <ol className="mt-4 leading-relaxed">
+                {products.map((p) => (
+                    <ProductItem key={p.id} p={p} {...props} />
+                ))}
+            </ol>
+        </>
     );
 }

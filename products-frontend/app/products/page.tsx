@@ -109,6 +109,31 @@ export default function ProductsPage() {
             setUpdating(false);
         }
     }
+    //ADD TO CART
+    const[addingToCart , setAddingToCart] = useState<number | null>(null)
+    const[cartMsg, setCartMsg] = useState<string | null>(null);
+
+    //handle add to cart func
+    async function handleAddToCart(productId: number){
+        try{
+            setAddingToCart(productId);
+            setCartMsg(null);
+            await api("/cart", {
+                method: "POST",
+                body: JSON.stringify({productId , quantity: 1}),
+            });
+
+            setCartMsg("Added to cart!");
+            setTimeout(() => setCartMsg(null), 2000);
+
+        }catch (e: any){
+            setCartMsg(e?.message ?? "Failed to add to cart");
+        }finally {
+            setAddingToCart(null);
+        }
+    }
+    
+
 
     // DELETE
     const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -154,6 +179,7 @@ export default function ProductsPage() {
             {updateMsg && <p className="text-green-400 mt-2">{updateMsg}</p>}
             {updateError && <p className="text-red-400 mt-2">Update error: {updateError}</p>}
             {deleteError && <p className="text-red-400 mt-2">Delete error: {deleteError}</p>}
+            {cartMsg && <p className="text-green-400 mt-2">{cartMsg}</p>}
 
             {Array.isArray(products) && (
                 <ProductList
@@ -170,6 +196,9 @@ export default function ProductsPage() {
                     onChangeEditName={setEditName}
                     onChangeEditDescription={setEditDescription}
                     onDelete={handleDelete}
+                    addingToCart={addingToCart}
+                    onAddToCart={handleAddToCart}
+
                 />
             )}
         </main>
