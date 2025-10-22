@@ -4,7 +4,8 @@ public enum ErrorMessages {
     PRODUCT_NOT_FOUND("Product Not Found"),
     NAME_REQUIRED("Name is required"),
     DESCRIPTION_LENGTH("Description must be 20 characters"),
-    PRICE_CANNOT_BE_NEGATIVE("Price cannot be negative");
+    PRICE_CANNOT_BE_NEGATIVE("Price cannot be negative"),
+    QUANTITY_CANNOT_BE_NEGATIVE("Quantity cannot be negative");
     //messages all in one place
 
     private final String message;
