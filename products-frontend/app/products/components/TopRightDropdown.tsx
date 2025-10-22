@@ -3,11 +3,20 @@
 import {Dropdown, DropdownItem} from "flowbite-react";
 import {useRouter} from "next/navigation";
 import {router} from "next/client";
+import {useEffect, useState} from "react";
+import {getCurrentUser} from "@/app/lib/auth";
 
 export default function TopRightDropdown() {
 
     const router = useRouter();
-
+    //check roles
+    //----
+    const [user, setUser] = useState<{ username: string; roles: string[] } | null>(null);
+    const isSuperuser = !!user?.roles.includes("ROLE_SUPERUSER");
+    useEffect(() => {
+        getCurrentUser().then((me) => setUser(me))
+    }, [])
+    //------
     function handleLogout(){
         localStorage.removeItem("jwt");
         router.push("/login")
@@ -40,8 +49,11 @@ export default function TopRightDropdown() {
       </span>
                 )}
             >
-                <DropdownItem className="hover:bg-white/15">Dashboard</DropdownItem>
-                <DropdownItem className="hover:bg-white/15">Products</DropdownItem>
+                {isSuperuser && <DropdownItem className="hover:bg-white/15">Dashboard</DropdownItem>}
+                <DropdownItem className="hover:bg-white/15"
+                onClick={() => router.push("/cart")}
+                >Cart
+                </DropdownItem>
                 <DropdownItem className="hover:bg-white/15">Settings</DropdownItem>
                 <DropdownItem
                     className="hover:bg-red-800 text-red-300"
