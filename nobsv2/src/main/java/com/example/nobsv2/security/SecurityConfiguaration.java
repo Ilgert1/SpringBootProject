@@ -52,8 +52,8 @@ public class SecurityConfiguaration {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products/**").hasAnyRole("BASIC", "ADMIN")
-                        .requestMatchers("/products/**", "/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/products/**").hasAnyRole("BASIC", "SUPERUSER")
+                        .requestMatchers("/products/**", "/admin/**").hasRole("SUPERUSER")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
