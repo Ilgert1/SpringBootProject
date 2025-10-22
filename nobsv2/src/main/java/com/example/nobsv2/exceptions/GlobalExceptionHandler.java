@@ -32,4 +32,12 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleProductNotValidConstraints(ConstraintViolationException exception){
         return new ErrorResponse(exception.getConstraintViolations().iterator().next().getMessage());
     }
+
+    @ExceptionHandler(InvalidQuantityException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidQuantity(InvalidQuantityException exception){
+        return new ErrorResponse(exception.getMessage());
+    }
+
 }
