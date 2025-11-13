@@ -6,6 +6,7 @@ import com.example.nobsv2.product.model.Product;
 import com.example.nobsv2.product.model.ProductDTO;
 import com.example.nobsv2.product.model.UpdateProductCommand;
 import com.example.nobsv2.product.services.*;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -69,6 +70,7 @@ ResponseEntity returns a response from the website which is later used
         return getProductService.execute(id);
     }
 
+    //TODO: implement in front-end
     @PreAuthorize("hasAnyRole('BASIC', 'SUPERUSER')")
     @GetMapping("/product/search")
     public ResponseEntity<List<ProductDTO>> searchProductByName(@RequestParam String name){
@@ -87,6 +89,5 @@ ResponseEntity returns a response from the website which is later used
     public ResponseEntity<Void> deleteProduct(@PathVariable Integer id){
         return deleteProductService.execute(id);
     }
-
 
 }
