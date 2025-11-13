@@ -9,7 +9,7 @@ export default function HomeGate() {
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
-    router.replace(token ? "/products" : "/login");
+    router.replace(token ? "/products" : "/welcome");
   }, [router]);
 
   // Optional: small placeholder while redirecting

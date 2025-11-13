@@ -54,7 +54,7 @@ export default function TopRightDropdown() {
                 onClick={() => router.push("/cart")}
                 >Cart
                 </DropdownItem>
-                <DropdownItem className="hover:bg-white/15">Settings</DropdownItem>
+                <DropdownItem className="hover:bg-white/15 ">Settings</DropdownItem>
                 <DropdownItem
                     className="hover:bg-red-800 text-red-300"
                     onClick={handleLogout}>
