@@ -15,7 +15,7 @@ export default function LeadsList({ title, data }: LeadsListProps) {
                     <div key={b.place_id ?? `fallback-${i}`} className="p-3 rounded border bg-gray-900/30">
                         <div className="flex justify-between items-start">
                             <div>
-                                <div className="font-medium text-sm">{b.name}</div>
+                                <div className="font-medium text-large">{b.name}</div>
                                 <div className="text-xs text-gray-300">{b.address}</div>
                                 {b.website && (
                                     <div className="text-xs">
