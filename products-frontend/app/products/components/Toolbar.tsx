@@ -12,6 +12,8 @@ export default function Toolbar({
                                     loading, error, isSuperuser, creating, onFetch, onStartCreate,
                                 }: Props) {
     return (
+        <section>
+
         <div className="flex items-center gap-2">
             <button
                 onClick={onFetch}
@@ -22,6 +24,7 @@ export default function Toolbar({
             >
                 {loading ? "Loading…" : "Get Products"}
             </button>
+
 
             {isSuperuser && (
                 <button
@@ -37,5 +40,6 @@ export default function Toolbar({
 
             {error && <span className="text-red-500">{error}</span>}
         </div>
+        </section>
     );
 }

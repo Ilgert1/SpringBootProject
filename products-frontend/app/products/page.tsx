@@ -6,8 +6,11 @@ import Toolbar from "./components/Toolbar";
 import CreateProductForm from "./components/CreateProductForm";
 import ProductList from "./components/ProductList";
 import type { Product } from "../types/product";
+import type {business} from "@/app/types/business";
 import { getCurrentUser, logout } from "@/app/lib/auth"; // NEW
-import { api } from "@/app/lib/api";                     // NEW
+import { api } from "@/app/lib/api";// NEW
+import SearchBar from "@/app/products/components/SearchBar";
+import LeadsList from "@/app/products/components/LeadsList";
 
 export default function ProductsPage() {
     const router = useRouter();
@@ -27,6 +30,8 @@ export default function ProductsPage() {
     const [creating, setCreating] = useState(false);
     const [createError, setCreateError] = useState<string | null>(null);
     const [createdMsg, setCreatedMsg] = useState<string | null>(null);
+
+
 
     async function handleCreate(name: string, description: string) {
         try {
@@ -61,6 +66,34 @@ export default function ProductsPage() {
             setProducts(null);
         } finally {
             setLoading(false);
+        }
+    }
+    //GET LEADS
+    const [leads, setLeads] = useState<business[] | null>(null);
+    const [loadingLeads, setLoadingLeads] = useState(false);
+    const [errorLeads, setErrorLeads] = useState<string | null>(null);
+    //Leads list
+
+
+// derived filtered state
+    const leadsNoWeb = leads?.filter(b => !b.website || b.website.trim() === "" || b.website.toUpperCase() === "NO WEBSITE");
+    async function fetchAllLeads() {
+        try {
+            setLoadingLeads(true);
+            setErrorLeads(null);
+
+            const list = await api<business[]>("/api/businesses");
+            const normalized = list.map(b => ({ ...b, place_id: b.place_id ?? b.place_id }));
+            setLeads(normalized);
+        } catch (e: any) {
+            if (String(e.message).includes("401") || String(e.message).includes("403")) {
+                router.replace("/login");
+                return;
+            }
+            setErrorLeads(e?.message ?? "Failed to fetch leads");
+            setLeads(null);
+        } finally {
+            setLoadingLeads(false);
         }
     }
 
@@ -167,6 +200,25 @@ export default function ProductsPage() {
                 onFetch={fetchProducts}
                 onStartCreate={() => {}}
             />
+            {/*NEW fetch leads button*/}
+            {/* Fetch button */}
+            <div className="flex items-center gap-3 mt-4 mb-4">
+                <button
+                    onClick={fetchAllLeads}
+                    className="px-3 py-1 rounded bg-blue-600 hover:bg-blue-500"
+                    disabled={loading}
+                >
+                    {loading ? "Fetching leads..." : "Fetch Leads"}
+                </button>
+                {error && <span className="text-red-500">{error}</span>}
+                {leads && <span className="text-green-300">Leads loaded: {leads.length}</span>}
+            </div>
+
+            {/* Render only leads with no website */}
+            {leadsNoWeb && leadsNoWeb.length > 0 && <LeadsList title="Leads with no website" data={leadsNoWeb} />}
+            {/* Render all leads */}
+            {leads && leads.length > 0 && <LeadsList title="Leads" data={leads} />}
+
 
             <CreateProductForm
                 isSuperuser={isSuperuser}
@@ -201,6 +253,7 @@ export default function ProductsPage() {
 
                 />
             )}
+
         </main>
     );
 }
