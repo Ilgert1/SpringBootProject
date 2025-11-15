@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Fallback to cookie (for same-domain requests)
         if (token == null) {
+            System.out.println("❌ No token found in request to: " + req.getRequestURI());
             Cookie[] cookies = req.getCookies();
             if (cookies != null) {
                 for (Cookie c : cookies) {
@@ -49,6 +50,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }
                 }
             }
+        }else{
+            System.out.println("✅ Token found for: " + req.getRequestURI());
+            System.out.println("Token value: " + token.substring(0, 20) + "...");
         }
 
         if (token != null) {
