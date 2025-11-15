@@ -10,9 +10,14 @@ export async function login(username: string, password: string) {
     if (!res.ok) throw new Error("Invalid credentials");
 
     const data = await res.json();
+    console.log('Login response data:', data);
     // Store token in localStorage
     if (data.accessToken) {
+        console.log('Saving token to localStorage:', data.accessToken);
         localStorage.setItem('access_token', data.accessToken);
+        console.log('Token saved. Verifying:', localStorage.getItem('access_token')); // Debug log
+    } else {
+        console.log('No accessToken in response!'); // Debug log
     }
 }
 
