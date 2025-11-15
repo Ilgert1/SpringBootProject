@@ -14,7 +14,11 @@ export async function api<T = any>(path: string, init: RequestInit = {}) {
     const token = getAccessToken();
     if (token) {
         headers.set("Authorization", `Bearer ${token}`);
+        console.log('Authorization header set'); // Add this
+    } else {
+        console.log('No token found!'); // Add this
     }
+
 
 
     const res = await fetch(`${base}${path}`, {
