@@ -31,6 +31,9 @@ export default function ProductsPage() {
     // In your ProductsPage, update the handleSearch function:
 
     async function handleSearch(city: string, state: string, radius: number, businessType: string) {
+        console.log('All cookies: ', document.cookie);
+        console.log('Access token:', document.cookie.split('; ').find(c => c.startsWith('access_token=')));
+
         try {
             setSearching(true);
             setError(null);
