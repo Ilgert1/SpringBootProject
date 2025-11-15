@@ -32,10 +32,11 @@ public class LoginController {
         var access  = jwt.generateAccessToken(user);
         var refresh = jwt.generateRefreshToken(user);
 
-        res.addCookie(cookie("access_token",  access,  30 * 60));            // 30 minutes
-        res.addCookie(cookie("refresh_token", refresh, 7 * 24 * 60 * 60));   // 7 days
+        res.addCookie(cookie("access_token",  access,  30 * 60));
+        res.addCookie(cookie("refresh_token", refresh, 7 * 24 * 60 * 60));
 
-        return ResponseEntity.ok(new AuthResponse("logged_in"));
+        // Return token in response body for cross-domain access
+        return ResponseEntity.ok(new AuthResponse("logged_in", access));
     }
 
     @PostMapping("/logout")

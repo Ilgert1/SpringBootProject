@@ -77,19 +77,19 @@ public class SecurityConfiguaration {
     CorsConfigurationSource corsSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // 1️⃣ Explicit allowed origins (required for cookies)
+        // 1️ Explicit allowed origins (required for cookies)
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",
                 "https://*.vercel.app"  // This now works with wildcards
         ));
 
-        // 2️⃣ Allowed methods
+        // 2️ Allowed methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
-        // 3️⃣ Allowed headers
+        // 3️ Allowed headers
         config.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"));
 
-        // 4️⃣ Allow credentials (cookies, auth headers)
+        // 4️ Allow credentials (cookies, auth headers)
         config.setAllowCredentials(true);
 
         // 5️⃣ Optional: expose headers if needed
