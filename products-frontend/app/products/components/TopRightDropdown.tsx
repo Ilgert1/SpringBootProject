@@ -35,7 +35,7 @@ export default function TopRightDropdown() {
                     <span
                         className="
           inline-flex items-center justify-center
-          !text-white text-3xl font-semibold tracking-wider
+          !text-black text-3xl font-semibold tracking-wider
           px-3 py-1 rounded-xl
           bg-white/10 backdrop-blur-md
           border border-white/20 ring-1 ring-white/10
@@ -59,6 +59,12 @@ export default function TopRightDropdown() {
                     className="hover:bg-red-800 text-red-300"
                     onClick={handleLogout}>
                     Sign out
+                </DropdownItem>
+                <DropdownItem
+                    className="hover:bg-grey/250 text-black"
+                    onClick={() => router.push('/generatedWebsites')}
+                >
+                    View generated websites
                 </DropdownItem>
             </Dropdown>
         </div>

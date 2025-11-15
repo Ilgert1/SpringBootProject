@@ -43,7 +43,7 @@ function StrengthBar({ level, score }: { level: StrengthLevel; score: number }) 
     return (
         <div className="mt-2">
             <div className="flex items-center gap-2">
-                <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div
                         className={`h-full ${colors[level]} transition-all`}
                         style={{ width: `${(score / 7) * 100}%` }}
@@ -52,12 +52,12 @@ function StrengthBar({ level, score }: { level: StrengthLevel; score: number }) 
                 <span
                     className={`text-sm font-medium ${
                         level === "weak"
-                            ? "text-red-400"
+                            ? "text-red-600"
                             : level === "fair"
-                                ? "text-orange-400"
+                                ? "text-orange-600"
                                 : level === "good"
-                                    ? "text-yellow-400"
-                                    : "text-green-400"
+                                    ? "text-yellow-600"
+                                    : "text-green-600"
                     }`}
                 >
                     {labels[level]}
@@ -123,99 +123,104 @@ export default function SignUpPage() {
     }
 
     return (
-        <main
-            className="relative min-h-screen overflow-hidden bg-cover bg-center bg-no-repeat flex flex-col items-center justify-center pt-8 p-8"
-            style={{
-                backgroundImage: "url('/modern.jpg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center center",
-            }}
-        >
+        <main className="relative min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden flex flex-col items-center justify-center py-32 px-6">
             {/* Navbar */}
-            <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-white/10 border-b border-white/10">
-                <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-                    <div className="flex items-center space-x-2">
-                        <img src="/justLogo.png" alt="Elevare" className="w-8 h-8" />
-                        <span className="text-white font-semibold text-xl tracking-wide">Elevare</span>
+            <nav className="fixed top-0 w-full z-50 bg-white border-b border-gray-200">
+                <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-5">
+                    <div className="flex items-center gap-3">
+                        <img src="/justLogo.png" alt="Elevare" className="w-9 h-9" />
+                        <span className="text-gray-900 font-semibold text-lg tracking-tight">Elevare</span>
                     </div>
 
-                    <div className="flex items-center space-x-6">
-                        <a href="/login" className="text-white hover:text-blue-400 transition">
-                            Login
-                        </a>
-                        <a
-                            href="/signup"
-                            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl shadow-md transition"
-                        >
-                            Sign up
+                    <div className="flex items-center gap-8">
+                        <a href="/login" className="text-gray-600 hover:text-gray-900 font-medium transition">
+                            Log in
                         </a>
                     </div>
                 </div>
             </nav>
 
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black/40" />
-
             {/* Signup Card */}
-            <div className="relative z-10 w-full max-w-sm">
-                <h1 className="text-5xl font-bold text-white mb-8 text-center">
-                    <span className="bg-gradient-to-r from-blue-400 to-cyan-300 text-transparent bg-clip-text">
+            <div className="relative z-10 w-full max-w-md">
+                <h1 className="text-5xl font-bold text-gray-900 mb-3 text-center">
+                    <span className="bg-gradient-to-r from-blue-600 to-cyan-500 text-transparent bg-clip-text">
                         Join
                     </span>{" "}
                     Elevare
                 </h1>
+                <p className="text-gray-600 text-center mb-10 text-lg">Create your account and start finding leads</p>
 
                 <form
                     onSubmit={onSubmit}
-                    className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20"
+                    className="bg-white p-10 rounded-2xl border border-gray-200 shadow-xl shadow-black/5"
                 >
-                    {error && <p className="mb-3 text-red-400 text-sm">{error}</p>}
-                    {msg && <p className="mb-3 text-green-400 text-sm">{msg}</p>}
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                            <p className="text-red-700 text-sm">{error}</p>
+                        </div>
+                    )}
+                    {msg && (
+                        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                            <p className="text-green-700 text-sm">{msg}</p>
+                        </div>
+                    )}
 
-                    <label className="block text-sm mb-1 text-white">Username</label>
+                    <label className="block text-sm font-medium mb-2 text-gray-700">Username</label>
                     <input
-                        className="w-full mb-4 rounded-lg bg-black/40 border border-white/15 px-3 py-2 text-white"
+                        className="w-full mb-6 rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         value={username}
                         onChange={(e) => setUserName(e.target.value)}
                         autoComplete="username"
+                        placeholder="you@business.com"
                     />
 
-                    <label className="block text-sm mb-1 text-white">Password</label>
+                    <label className="block text-sm font-medium mb-2 text-gray-700">Password</label>
                     <input
                         type="password"
-                        className="w-full mb-1 rounded-lg bg-black/40 border border-white/15 px-3 py-2 text-white"
+                        className="w-full mb-1 rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         onFocus={() => setShowRequirements(true)}
                         onBlur={() => setShowRequirements(false)}
                         autoComplete="new-password"
+                        placeholder="••••••••"
                     />
 
                     {password && <StrengthBar level={strengthLevel} score={strengthScore} />}
 
                     {showRequirements && (
-                        <div className="mt-3 text-xs text-gray-300 bg-black/40 p-2 rounded">
-                            <p className="font-semibold mb-1">Password must include:</p>
-                            <ul className="space-y-1">
-                                <li>✓ At least 8 characters</li>
-                                <li>✓ Uppercase letters (A-Z)</li>
-                                <li>✓ Lowercase letters (a-z)</li>
-                                <li>✓ Numbers (0-9)</li>
-                                <li>✓ Special characters (!@#$%^&*)</li>
+                        <div className="mt-4 text-xs text-gray-600 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <p className="font-semibold mb-2 text-gray-900">Password must include:</p>
+                            <ul className="space-y-1.5">
+                                <li className="flex items-center gap-2">
+                                    <span className="text-gray-400">✓</span> At least 8 characters
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="text-gray-400">✓</span> Uppercase letters (A-Z)
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="text-gray-400">✓</span> Lowercase letters (a-z)
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="text-gray-400">✓</span> Numbers (0-9)
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="text-gray-400">✓</span> Special characters (!@#$%^&*)
+                                </li>
                             </ul>
                         </div>
                     )}
 
                     <button
                         disabled={submitting || !isPasswordStrong}
-                        className="w-full mt-5 rounded-lg px-3 py-2 border border-white/20 text-white bg-white/10 hover:bg-white/20 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full mt-8 rounded-xl py-3.5 text-white bg-blue-600 hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg shadow-blue-600/20"
                     >
-                        {submitting ? "Creating…" : "Sign up"}
+                        {submitting ? "Creating…" : "Create account"}
                     </button>
 
-                    <p className="text-sm text-gray-300 mt-4 text-center">
+                    <p className="text-sm text-gray-600 mt-6 text-center">
                         Already have an account?{" "}
-                        <a href="/login" className="underline text-blue-400">
+                        <a href="/login" className="font-medium text-blue-600 hover:text-blue-700 transition">
                             Log in
                         </a>
                     </p>

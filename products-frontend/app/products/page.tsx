@@ -2,21 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TopRightDropdown from "./components/TopRightDropdown";
-import Toolbar from "./components/Toolbar";
-import CreateProductForm from "./components/CreateProductForm";
-import ProductList from "./components/ProductList";
-import type { Product } from "../types/product";
 import type {business} from "@/app/types/business";
-import { getCurrentUser, logout } from "@/app/lib/auth"; // NEW
-import { api } from "@/app/lib/api";// NEW
-import SearchBar from "@/app/products/components/SearchBar";
+import { getCurrentUser } from "@/app/lib/auth";
+import { api } from "@/app/lib/api";
 import LeadsList from "@/app/products/components/LeadsList";
+import LeadSearchForm from "@/app/products/components/LeadSearchForm";
+import GroupedLeadsView from "@/app/products/components/GroupedLeadsView";
 
 export default function ProductsPage() {
     const router = useRouter();
     const [user, setUser] = useState<{ username: string; roles: string[] } | null>(null);
 
-    // Gate the page: must be logged in
     useEffect(() => {
         getCurrentUser().then((me) => {
             if (!me) router.replace("/login");
@@ -24,67 +20,78 @@ export default function ProductsPage() {
         });
     }, [router]);
 
-    const isSuperuser = !!user?.roles.includes("ROLE_SUPERUSER"); // or ROLE_ADMIN per your backend
-
-    // CREATE
-    const [creating, setCreating] = useState(false);
-    const [createError, setCreateError] = useState<string | null>(null);
-    const [createdMsg, setCreatedMsg] = useState<string | null>(null);
-
-
-
-    async function handleCreate(name: string, description: string) {
-        try {
-            setCreating(true); setCreateError(null); setCreatedMsg(null);
-            const created = await api<Product>("/product", {
-                method: "POST",
-                body: JSON.stringify({ name: name.trim(), description: description.trim() || null }),
-            });
-            setProducts((prev) => (prev ? [created, ...prev] : [created]));
-            setCreatedMsg("Product created.");
-        } catch (e: any) {
-            if (String(e.message).includes("401") || String(e.message).includes("403")) router.replace("/login");
-            setCreateError(e?.message ?? "Failed to create product");
-        } finally {
-            setCreating(false);
-        }
-    }
-
-    // LIST
-    const [products, setProducts] = useState<Product[] | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [leads, setLeads] = useState<business[] | null>(null);
+    const [searching, setSearching] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function fetchProducts() {
+    const leadsNoWeb = leads?.filter(b =>
+        !b.website || b.website.trim() === "" || b.website.toUpperCase() === "NO WEBSITE"
+    );
+
+    // In your ProductsPage, update the handleSearch function:
+
+    async function handleSearch(city: string, state: string, radius: number, businessType: string) {
         try {
-            setLoading(true); setError(null);
-            const list = await api<Product[]>("/products");
-            setProducts(list);
+            setSearching(true);
+            setError(null);
+
+            const response = await api<{
+                success: boolean;
+                message: string;
+                location: string;
+                radius: number;
+                businessType: string;
+                totalFound: number;
+                imported: number;
+                businessesWithoutWebsite: number;
+            }>("/api/leads/search", {
+                method: "POST",
+                body: JSON.stringify({
+                    city,
+                    state,
+                    radius,
+                    businessType
+                })
+            });
+
+            if (response.success) {
+                // After search completes, fetch the updated leads
+                if(response.totalFound === 0){
+                    setLeads([]);
+                    alert('No businesses found for that search')
+                }else {
+                    const list = await api<business[]>("/api/businesses");
+                    setLeads(list);
+
+                    // Show success message
+                    alert(`Found ${response.totalFound} businesses! ${response.businessesWithoutWebsite} without websites.`);
+                }
+            } else {
+                throw new Error(response.message);
+            }
+
         } catch (e: any) {
-            if (String(e.message).includes("401") || String(e.message).includes("403")) router.replace("/login");
-            setError(e?.message ?? "Failed to fetch");
-            setProducts(null);
+            if (String(e.message).includes("401") || String(e.message).includes("403")) {
+                router.replace("/login");
+                return;
+            }
+            setError(e?.message ?? "Failed to search for leads");
         } finally {
-            setLoading(false);
+            setSearching(false);
         }
     }
-    //GET LEADS
-    const [leads, setLeads] = useState<business[] | null>(null);
+    //fetch all leads
     const [loadingLeads, setLoadingLeads] = useState(false);
     const [errorLeads, setErrorLeads] = useState<string | null>(null);
-    //Leads list
 
 
-// derived filtered state
-    const leadsNoWeb = leads?.filter(b => !b.website || b.website.trim() === "" || b.website.toUpperCase() === "NO WEBSITE");
     async function fetchAllLeads() {
         try {
             setLoadingLeads(true);
             setErrorLeads(null);
 
             const list = await api<business[]>("/api/businesses");
-            const normalized = list.map(b => ({ ...b, place_id: b.place_id ?? b.place_id }));
-            setLeads(normalized);
+            setLeads(list);
         } catch (e: any) {
             if (String(e.message).includes("401") || String(e.message).includes("403")) {
                 router.replace("/login");
@@ -97,163 +104,84 @@ export default function ProductsPage() {
         }
     }
 
-    // UPDATE
-    const [editingId, setEditingId] = useState<number | null>(null);
-    const [editName, setEditName] = useState("");
-    const [editDescription, setEditDescription] = useState("");
-    const [updating, setUpdating] = useState(false);
-    const [updateError, setUpdateError] = useState<string | null>(null);
-    const [updateMsg, setUpdateMsg] = useState<string | null>(null);
-
-    function startEdit(p: Product) {
-        setEditingId(p.id);
-        setEditName(p.name);
-        setEditDescription(p.description || "");
-        setUpdateError(null);
-        setUpdateMsg(null);
-    }
-    function cancelEdit() {
-        setEditingId(null);
-        setUpdateError(null);
-        setUpdateMsg(null);
-    }
-    async function handleUpdateSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        if (!editingId) return;
-        if (!editName.trim()) { setUpdateError("Name is required."); return; }
-        try {
-            setUpdating(true); setUpdateError(null); setUpdateMsg(null);
-            const updated = await api<Product | undefined>(`/product/${editingId}`, {
-                method: "PUT",
-                body: JSON.stringify({ name: editName.trim(), description: editDescription.trim() || null }),
-            });
-            setProducts((prev) =>
-                prev?.map((p) =>
-                    p.id === editingId
-                        ? (updated ?? { ...p, name: editName.trim(), description: editDescription.trim() || null })
-                        : p
-                ) ?? prev
-            );
-            setUpdateMsg("Product updated."); setEditingId(null);
-        } catch (e: any) {
-            if (String(e.message).includes("401") || String(e.message).includes("403")) router.replace("/login");
-            setUpdateError(e?.message ?? "Failed to update product");
-        } finally {
-            setUpdating(false);
-        }
-    }
-    //ADD TO CART
-    const[addingToCart , setAddingToCart] = useState<number | null>(null)
-    const[cartMsg, setCartMsg] = useState<string | null>(null);
-
-    //handle add to cart func
-    async function handleAddToCart(productId: number){
-        try{
-            setAddingToCart(productId);
-            setCartMsg(null);
-            await api("/cart", {
-                method: "POST",
-                body: JSON.stringify({productId , quantity: 1}),
-            });
-
-            setCartMsg("Added to cart!");
-            setTimeout(() => setCartMsg(null), 2000);
-
-        }catch (e: any){
-            setCartMsg(e?.message ?? "Failed to add to cart");
-        }finally {
-            setAddingToCart(null);
-        }
-    }
-    
-
-
-    // DELETE
-    const [deletingId, setDeletingId] = useState<number | null>(null);
-    const [deleteError, setDeleteError] = useState<string | null>(null);
-    async function handleDelete(id: number) {
-        try {
-            setDeleteError(null); setDeletingId(id);
-            await api(`/product/${id}`, { method: "DELETE" });
-            setProducts((prev) => prev?.filter((p) => p.id !== id) ?? prev);
-            if (editingId === id) setEditingId(null);
-        } catch (e: any) {
-            if (String(e.message).includes("401") || String(e.message).includes("403")) router.replace("/login");
-            setDeleteError(e?.message ?? "Failed to delete product");
-        } finally {
-            setDeletingId(null);
-        }
-    }
-
-    if (!user) return null; // or a spinner while user loads
+    if (!user) return null;
 
     return (
-        <main className="max-w-3xl mx-auto my-8 font-sans text-gray-100">
-            <TopRightDropdown />
-            <h1 className="mb-4 text-xl font-semibold">Products Demo</h1>
+        <main className="min-h-screen bg-gray-50">
+            <div className="max-w-5xl mx-auto px-6 py-8">
+                <TopRightDropdown />
 
-            <Toolbar
-                loading={loading}
-                error={error}
-                isSuperuser={isSuperuser}
-                creating={creating}
-                onFetch={fetchProducts}
-                onStartCreate={() => {}}
-            />
-            {/*NEW fetch leads button*/}
-            {/* Fetch button */}
-            <div className="flex items-center gap-3 mt-4 mb-4">
-                <button
-                    onClick={fetchAllLeads}
-                    className="px-3 py-1 rounded bg-blue-600 hover:bg-blue-500"
-                    disabled={loading}
-                >
-                    {loading ? "Fetching leads..." : "Fetch Leads"}
-                </button>
-                {error && <span className="text-red-500">{error}</span>}
-                {leads && <span className="text-green-300">Leads loaded: {leads.length}</span>}
+                {/* Header */}
+                <div className="mb-8">
+                    <h1 className="text-3xl font-semibold text-gray-900 mb-2">Lead Generator</h1>
+                    <p className="text-gray-600">Find local businesses that need your help</p>
+                </div>
+
+                {/* Search Form */}
+                <LeadSearchForm onSearch={handleSearch} searching={searching} />
+
+                {/* Error Message */}
+                {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                        <p className="text-red-800 text-sm">{error}</p>
+                    </div>
+                )}
+
+                {/* Results Summary */}
+                {leads && (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm text-gray-600">Total Leads</p>
+                                <p className="text-2xl font-semibold text-gray-900">{leads.length}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">No Website</p>
+                                <p className="text-2xl font-semibold text-blue-600">{leadsNoWeb?.length || 0}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">Conversion Rate</p>
+                                <p className="text-2xl font-semibold text-green-600">
+                                    {leads.length > 0 ? Math.round(((leadsNoWeb?.length || 0) / leads.length) * 100) : 0}%
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Leads Lists */}
+                {leads && leads.length > 0 && (
+                    <GroupedLeadsView leads={leads} />
+                )}
+
+
+                {/* Empty State */}
+                <div className="flex items-center gap-3 mt-4 mb-4">
+                    <button
+                        onClick={fetchAllLeads}
+                        className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 text-white font-medium"
+                        disabled={loadingLeads}
+                    >
+                        {loadingLeads ? "Loading..." : "Load Existing Leads"}
+                    </button>
+
+                    {errorLeads && <span className="text-red-500">{errorLeads}</span>}
+                    {leads && <span className="text-green-300">{leads.length} leads loaded</span>}
+                </div>
+                { !leads && !searching && (
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
+                        <div className="max-w-md mx-auto">
+                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No leads yet</h3>
+                            <p className="text-gray-600">Enter a location above to find local businesses</p>
+                        </div>
+                    </div>
+                )}
             </div>
-
-            {/* Render only leads with no website */}
-            {leadsNoWeb && leadsNoWeb.length > 0 && <LeadsList title="Leads with no website" data={leadsNoWeb} />}
-            {/* Render all leads */}
-            {leads && leads.length > 0 && <LeadsList title="Leads" data={leads} />}
-
-
-            <CreateProductForm
-                isSuperuser={isSuperuser}
-                creating={creating}
-                onSubmit={handleCreate}
-                createError={createError}
-                createdMsg={createdMsg}
-            />
-
-            {updateMsg && <p className="text-green-400 mt-2">{updateMsg}</p>}
-            {updateError && <p className="text-red-400 mt-2">Update error: {updateError}</p>}
-            {deleteError && <p className="text-red-400 mt-2">Delete error: {deleteError}</p>}
-            {cartMsg && <p className="text-green-400 mt-2">{cartMsg}</p>}
-
-            {Array.isArray(products) && (
-                <ProductList
-                    products={products}
-                    isSuperuser={isSuperuser}
-                    editingId={editingId}
-                    editName={editName}
-                    editDescription={editDescription}
-                    updating={updating}
-                    deletingId={deletingId}
-                    onStartEdit={startEdit}
-                    onCancelEdit={cancelEdit}
-                    onSubmitEdit={handleUpdateSubmit}
-                    onChangeEditName={setEditName}
-                    onChangeEditDescription={setEditDescription}
-                    onDelete={handleDelete}
-                    addingToCart={addingToCart}
-                    onAddToCart={handleAddToCart}
-
-                />
-            )}
-
         </main>
     );
 }
