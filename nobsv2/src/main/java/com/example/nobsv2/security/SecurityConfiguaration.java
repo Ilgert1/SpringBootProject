@@ -80,6 +80,7 @@ public class SecurityConfiguaration {
         // 1️⃣ Explicit allowed origins (required for cookies)
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000", // local dev
+                "https://*.vercel.app",
                 "https://spring-boot-project-baw6xdufq-ilgerts-projects.vercel.app" // Vercel
         ));
 
