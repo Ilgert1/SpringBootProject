@@ -78,10 +78,9 @@ public class SecurityConfiguaration {
         CorsConfiguration config = new CorsConfiguration();
 
         // 1️⃣ Explicit allowed origins (required for cookies)
-        config.setAllowedOrigins(List.of(
-                "http://localhost:3000", // local dev
-                "https://*.vercel.app",
-                "https://spring-boot-project-baw6xdufq-ilgerts-projects.vercel.app" // Vercel
+        config.setAllowedOriginPatterns(List.of(
+                "http://localhost:3000",
+                "https://*.vercel.app"  // This now works with wildcards
         ));
 
         // 2️⃣ Allowed methods
