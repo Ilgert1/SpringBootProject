@@ -52,6 +52,10 @@ public class SecurityConfiguaration {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
+                        .requestMatchers("/api/leads/**").authenticated()
+                        .requestMatchers("/api/businesses/*/generated-code").permitAll()
+                        .requestMatchers("/api/businesses/with-generated-website").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/businesses/with-generated-website").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").hasAnyRole("BASIC", "SUPERUSER")
                         .requestMatchers("/products/**", "/admin/**").hasRole("SUPERUSER")
                         .anyRequest().authenticated())
@@ -71,19 +75,31 @@ public class SecurityConfiguaration {
 
     @Bean
     CorsConfigurationSource corsSource() {
-        CorsConfiguration c = new CorsConfiguration();
+        CorsConfiguration config = new CorsConfiguration();
 
-        c.setAllowedOriginPatterns(List.of(
-                "http://localhost:3000",
-                "https://*.vercel.app"
+        // 1️⃣ Explicit allowed origins (required for cookies)
+        config.setAllowedOrigins(List.of(
+                "http://localhost:3000", // local dev
+                "https://spring-boot-project-baw6xdufq-ilgerts-projects.vercel.app" // Vercel
         ));
 
-        c.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        c.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"));
-        c.setAllowCredentials(true);
+        // 2️⃣ Allowed methods
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
-        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
-        src.registerCorsConfiguration("/**", c);
-        return src;
+        // 3️⃣ Allowed headers
+        config.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"));
+
+        // 4️⃣ Allow credentials (cookies, auth headers)
+        config.setAllowCredentials(true);
+
+        // 5️⃣ Optional: expose headers if needed
+        config.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
+
+        // Apply to all endpoints
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
+
 }
