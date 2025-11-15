@@ -1,3 +1,5 @@
+export type Me = {username: string; roles: string[]};
+
 export async function login(username: string, password: string) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "POST",
@@ -25,4 +27,16 @@ export async function logout() {
 export function getAccessToken(): string | null {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem('access_token');
+}
+
+export async function getCurrentUser(): Promise<Me | null> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${getAccessToken()}`
+        },
+        cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return res.json();
 }
