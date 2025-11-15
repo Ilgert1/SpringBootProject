@@ -29,10 +29,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             chain.doFilter(req, res);
             return;
         }
+
         String token = null;
-        Cookie[] cookies = req.getCookies();
-        if (cookies != null) {
-            for (Cookie c : cookies) if ("access_token".equals(c.getName())) { token = c.getValue(); break; }
+
+        // First try Authorization header (for cross-domain requests)
+        String authHeader = req.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+
+        // Fallback to cookie (for same-domain requests)
+        if (token == null) {
+            Cookie[] cookies = req.getCookies();
+            if (cookies != null) {
+                for (Cookie c : cookies) {
+                    if ("access_token".equals(c.getName())) {
+                        token = c.getValue();
+                        break;
+                    }
+                }
+            }
         }
 
         if (token != null) {
@@ -47,4 +63,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         chain.doFilter(req, res);
     }
+
 }
