@@ -49,6 +49,9 @@ public class Business {
     @Column(length = 2000)
     private String generatedWebsiteUrl;  // URL to the AI-generated website
 
+    @Column(columnDefinition = "TEXT")
+    private String generatedWebsiteCode;
+
     @Column(length = 1000)
     private String notes;  // For tracking conversations, follow-ups, etc.
 
@@ -77,6 +80,15 @@ public class Business {
                 website.equalsIgnoreCase("NO WEBSITE") ||
                 website.trim().isEmpty();
     }
+    // Explicit getter/setter to avoid relying on Lombok in CI
+    public String getGeneratedWebsiteCode() {
+        return this.generatedWebsiteCode;
+    }
+
+    public void setGeneratedWebsiteCode(String generatedWebsiteCode) {
+        this.generatedWebsiteCode = generatedWebsiteCode;
+    }
+
 
     // Enum for lead status tracking
     public enum LeadStatus {
