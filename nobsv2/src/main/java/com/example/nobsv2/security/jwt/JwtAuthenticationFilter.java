@@ -58,10 +58,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null) {
             try {
                 var claims = jwtUtil.parse(token).getBody();
+                System.out.println("📋 Token subject: " + claims.getSubject());
+                System.out.println("📋 Token roles: " + claims.get("roles"));
                 var user = userDetailsService.loadUserByUsername(claims.getSubject());
+                System.out.println("👤 User authorities: " + user.getAuthorities());
                 var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (JwtException e) {
+                System.out.println("❌ JWT parsing failed: " + e.getMessage());
                 // invalid/expired token → proceed unauthenticated
             }
         }
