@@ -35,17 +35,17 @@ public class WebsiteGenerationService {
         // Extract the React component code (remove any markdown formatting)
         String cleanCode = extractCode(generatedCode);
 
-        // For now, we'll save the code and return it
-        // Later we'll add automatic deployment to Vercel
+        // Save the code to database
+        Business saved = updateBusinessService.markWebsiteGenerated(businessId, "Generated", cleanCode);
+        log.info("Saved business: websiteGenerated={}, code length={}", saved.getWebsiteGenerated(),
+                saved.getGeneratedWebsiteCode() == null ? 0 : saved.getGeneratedWebsiteCode().length());
+
 
         WebsiteGenerationResult result = new WebsiteGenerationResult();
         result.setBusinessId(businessId);
         result.setBusinessName(business.getName());
         result.setGeneratedCode(cleanCode);
         result.setSuccess(true);
-
-        // Update business status
-        updateBusinessService.markWebsiteGenerated(businessId, "Generated (not yet deployed)");
 
         log.info("Website generated successfully for: {}", business.getName());
 
