@@ -2,23 +2,27 @@ package com.example.nobsv2.business;
 
 import com.example.nobsv2.business.dto.BusinessImportDTO;
 import com.example.nobsv2.business.model.Business;
+import com.example.nobsv2.business.services.GooglePlacesCrawlerService;
 import com.example.nobsv2.business.services.ImportBusinessesService;
+import com.example.nobsv2.business.services.PythonCrawlerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/businesses")
+@RequestMapping("/api/leads")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "${frontend.url:http://localhost:3000}")
 @Slf4j
 public class LeadSearchController {
 
     private final ImportBusinessesService importBusinessesService;
-    // We'll add PythonCrawlerService later
+    //private final PythonCrawlerService pythonCrawlerService;  // Add this
+    private final GooglePlacesCrawlerService googlePlacesCrawlerService;
 
     @PostMapping("/search")
     public ResponseEntity<SearchResponse> searchLeads(@RequestBody SearchRequest request) {
@@ -26,7 +30,7 @@ public class LeadSearchController {
                 request.getCity(), request.getState(), request.getRadius(), request.getBusinessType());
 
         try {
-            // Step 1: Validate request
+            // Validate
             if (request.getCity() == null || request.getCity().trim().isEmpty()) {
                 throw new IllegalArgumentException("City is required");
             }
@@ -34,52 +38,49 @@ public class LeadSearchController {
                 throw new IllegalArgumentException("State is required");
             }
 
-            // Build location string
+            // Build location
             String location = request.getCity().trim() + ", " + request.getState().trim();
 
-            // Step 2: Call Python crawler (we'll implement this next)
-            // For now, return a placeholder response
-            log.info("Would search for businesses in: {}, radius: {}m, type: {}",
-                    location, request.getRadius(), request.getBusinessType());
+            // Call Python crawler (ADDED THIS) --> changed to java instead
+            List<BusinessImportDTO> crawledBusinesses = googlePlacesCrawlerService.crawl(
+                    location,
+                    request.getRadius(),
+                    request.getBusinessType()
+            );
 
-            // TODO: Call Python script here
-            // List<BusinessImportDTO> crawledBusinesses = pythonCrawlerService.crawl(
-            //     location,
-            //     request.getRadius(),
-            //     request.getBusinessType()
-            // );
+            // Import to database (ADDED THIS)
+            ImportBusinessesService.ImportResult result =
+                    importBusinessesService.importBusinesses(crawledBusinesses);
 
-            // Step 3: Import results to database
-            // ImportBusinessesService.ImportResult result = importBusinessesService.importBusinesses(crawledBusinesses);
+            // Count businesses without website (ADDED THIS)
+            int noWebsite = (int) crawledBusinesses.stream()
+                    .filter(b -> "NO WEBSITE".equals(b.getWebsite()) || b.getWebsite() == null)
+                    .count();
 
-            // Step 4: Return response
+            // Build response
             SearchResponse response = new SearchResponse();
             response.setSuccess(true);
-            response.setMessage("Search endpoint ready - Python integration coming next");
+            response.setMessage("Search completed successfully");
             response.setLocation(location);
             response.setRadius(request.getRadius());
             response.setBusinessType(request.getBusinessType());
-            response.setTotalFound(0);
-            response.setImported(0);
-            response.setBusinessesWithoutWebsite(0);
+            response.setTotalFound(crawledBusinesses.size());  // Changed from 0
+            response.setImported(result.getImported());  // Changed from 0
+            response.setBusinessesWithoutWebsite(noWebsite);  // Changed from 0
 
             return ResponseEntity.ok(response);
-
-        } catch (IllegalArgumentException e) {
-            log.error("Validation error: {}", e.getMessage());
-            SearchResponse errorResponse = new SearchResponse();
-            errorResponse.setSuccess(false);
-            errorResponse.setMessage(e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
 
         } catch (Exception e) {
             log.error("Error searching for leads: {}", e.getMessage(), e);
             SearchResponse errorResponse = new SearchResponse();
             errorResponse.setSuccess(false);
-            errorResponse.setMessage("Failed to search for leads: " + e.getMessage());
+            errorResponse.setMessage("Failed to search: " + e.getMessage());
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
+
+    // Keep your existing DTOs
+
 
     // Request DTO
     @lombok.Data
