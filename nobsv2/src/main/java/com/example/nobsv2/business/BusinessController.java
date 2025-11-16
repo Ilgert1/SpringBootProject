@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/businesses")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "${frontend.url:http://localhost:3000}")
+//@CrossOrigin(origins = "${frontend.url:http://localhost:3000}")
 public class BusinessController {
 
     private final GetBusinessesService getBusinessesService;
@@ -34,6 +34,12 @@ public class BusinessController {
     @GetMapping("/no-website")
     public ResponseEntity<List<Business>> getBusinessesWithoutWebsite() {
         return ResponseEntity.ok(getBusinessesService.getBusinessesWithoutWebsite());
+    }
+
+    //businesses with generated websites
+    @GetMapping("/with-generated-website")
+    public ResponseEntity<List<Business>> getBusinessesWithGeneratedWebsites(){
+        return ResponseEntity.ok(getBusinessesService.getBusinessesWithGeneratedWebsites());
     }
 
     // Get uncontacted leads
@@ -110,6 +116,37 @@ public class BusinessController {
         WebsiteGenerationService.WebsiteGenerationResult result =
                 websiteGenerationService.generateWebsite(id);
         return ResponseEntity.ok(result);
+    }
+    //get generated code
+    // Add this to your BusinessController.java
+
+    // Get generated website code for preview
+    @GetMapping("/{id}/generated-code")
+    public ResponseEntity<GeneratedCodeResponse> getGeneratedCode(@PathVariable Integer id) {
+        Business business = getBusinessService.getBusinessById(id);
+
+        if (business.getGeneratedWebsiteCode() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        GeneratedCodeResponse response = new GeneratedCodeResponse();
+        response.setBusinessId(business.getId());
+        response.setBusinessName(business.getName());
+        response.setGeneratedCode(business.getGeneratedWebsiteCode());
+        response.setGeneratedAt(business.getUpdatedAt().toString());
+
+        return ResponseEntity.ok(response);
+    }
+
+    // Add this DTO at the bottom with your other DTOs
+    @lombok.Data
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class GeneratedCodeResponse {
+        private Integer businessId;
+        private String businessName;
+        private String generatedCode;
+        private String generatedAt;
     }
 
     // Delete business
