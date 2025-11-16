@@ -9,7 +9,7 @@ export default function GeneratedWebsitesPage() {
     const [error, setError] = useState<string | null>(null);
 
     // Update this if your backend is on a different domain
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://springbootproject-production-9187.up.railway.app";
 
     useEffect(() => {
         async function fetchBusinesses() {
