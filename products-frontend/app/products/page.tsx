@@ -74,6 +74,9 @@ export default function ProductsPage() {
             }
 
         } catch (e: any) {
+            console.error('Search error:', e);
+            console.error('Error message:', e.message);
+            console.error('Error string:', String(e));
             if (String(e.message).includes("401") || String(e.message).includes("403")) {
                 router.replace("/login");
                 return;
