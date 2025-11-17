@@ -1,6 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import * as process from "node:process";
 
 export default function PreviewPage() {
     const params = useParams();
@@ -8,7 +9,8 @@ export default function PreviewPage() {
     const businessId = params.id as string;
     const [loading, setLoading] = useState(true);
 
-    const renderUrl = `/api/render/${businessId}`;
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://springbootproject-production-9187.up.railway.app";
+    const renderUrl = `${API_BASE}/api/businesses/${businessId}/render`;
 
     return (
         <div className="min-h-screen bg-gray-100">
