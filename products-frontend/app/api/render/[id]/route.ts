@@ -60,179 +60,63 @@ export async function GET(
 <body>
     <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        
-        // Create all Lucide icons as React components
-        const createIcon = (iconName) => {
-            return (props) => {
-                const ref = React.useRef();
-                React.useEffect(() => {
-                    if (ref.current && window.lucide) {
-                        const icon = window.lucide[iconName];
-                        if (icon) {
-                            ref.current.innerHTML = '';
-                            window.lucide.createElement(icon).setAttribute('stroke-width', props.strokeWidth || 2);
-                            ref.current.appendChild(window.lucide.createElement(icon));
+   <script type="text/babel">
+    const { useState, useEffect } = React;
+    
+    // Create icon component factory
+    const createIcon = (iconName) => {
+        return (props) => {
+            const ref = React.useRef();
+            React.useEffect(() => {
+                if (ref.current && window.lucide) {
+                    const icon = window.lucide[iconName];
+                    if (icon) {
+                        ref.current.innerHTML = '';
+                        const iconElement = window.lucide.createElement(icon);
+                        iconElement.setAttribute('stroke-width', props.strokeWidth || 2);
+                        if (props.className) {
+                            iconElement.setAttribute('class', props.className);
                         }
+                        if (props.size) {
+                            iconElement.setAttribute('width', props.size);
+                            iconElement.setAttribute('height', props.size);
+                        }
+                        ref.current.appendChild(iconElement);
                     }
-                }, []);
-                return React.createElement('i', { 
-                    ref,
-                    className: props.className,
-                    style: { display: 'inline-block', width: '1em', height: '1em' }
-                });
-            };
+                }
+            }, [props.className, props.size, props.strokeWidth]);
+            return React.createElement('i', { 
+                ref,
+                className: props.className,
+                style: { display: 'inline-block', width: '1em', height: '1em', ...props.style }
+            });
         };
-        
-        // Create all common icons - COMPREHENSIVE LIST
-        const Scale = createIcon('Scale');
-        const Balance = createIcon('Balance');
-        // Contact & Social
-        const Phone = createIcon('Phone');
-        const Mail = createIcon('Mail');
-        const MapPin = createIcon('MapPin');
-        const MessageCircle = createIcon('MessageCircle');
-        const Facebook = createIcon('Facebook');
-        const Twitter = createIcon('Twitter');
-        const Instagram = createIcon('Instagram');
-        const Linkedin = createIcon('Linkedin');
-        const Youtube = createIcon('Youtube');
-        
-        // UI & Navigation
-        const Menu = createIcon('Menu');
-        const X = createIcon('X');
-        const Check = createIcon('Check');
-        const CheckCircle = createIcon('CheckCircle');
-        const ChevronRight = createIcon('ChevronRight');
-        const ChevronDown = createIcon('ChevronDown');
-        const ChevronUp = createIcon('ChevronUp');
-        const ChevronLeft = createIcon('ChevronLeft');
-        const ArrowRight = createIcon('ArrowRight');
-        const ArrowLeft = createIcon('ArrowLeft');
-        const ExternalLink = createIcon('ExternalLink');
-        const Info = createIcon('Info');
-        const AlertCircle = createIcon('AlertCircle');
-        
-        // Time & Calendar
-        const Clock = createIcon('Clock');
-        const Calendar = createIcon('Calendar');
-        
-        // People & Users
-        const Users = createIcon('Users');
-        const User = createIcon('User');
-        const UserCheck = createIcon('UserCheck');
-        
-        // Ratings & Achievement
-        const Star = createIcon('Star');
-        const Award = createIcon('Award');
-        const Trophy = createIcon('Trophy');
-        const Target = createIcon('Target');
-        const Medal = createIcon('Medal');
-        
-        // Food & Beverage
-        const ChefHat = createIcon('ChefHat');
-        const Pizza = createIcon('Pizza');
-        const Utensils = createIcon('Utensils');
-        const Coffee = createIcon('Coffee');
-        const Wine = createIcon('Wine');
-        const Cookie = createIcon('Cookie');
-        const IceCream = createIcon('IceCream');
-        const Soup = createIcon('Soup');
-        const Salad = createIcon('Salad');
-        
-        // Medical & Health
-        const Stethoscope = createIcon('Stethoscope');
-        const Activity = createIcon('Activity');
-        const Heart = createIcon('Heart');
-        const HeartPulse = createIcon('HeartPulse');
-        const Shield = createIcon('Shield');
-        const Pill = createIcon('Pill');
-        const Syringe = createIcon('Syringe');
-        const Thermometer = createIcon('Thermometer');
-        const Cross = createIcon('Cross');
-        
-        // Fitness & Sports
-        const Dumbbell = createIcon('Dumbbell');
-        const Bike = createIcon('Bike');
-        const Flame = createIcon('Flame');
-        const Timer = createIcon('Timer');
-        const Footprints = createIcon('Footprints');
-        
-        // Business & Commerce
-        const Briefcase = createIcon('Briefcase');
-        const Building = createIcon('Building');
-        const Building2 = createIcon('Building2');
-        const Store = createIcon('Store');
-        const ShoppingBag = createIcon('ShoppingBag');
-        const ShoppingCart = createIcon('ShoppingCart');
-        const CreditCard = createIcon('CreditCard');
-        const DollarSign = createIcon('DollarSign');
-        const Receipt = createIcon('Receipt');
-        const Tag = createIcon('Tag');
-        const Bed = createIcon('Bed');
-        
-        // Services & Tools
-        const Wrench = createIcon('Wrench');
-        const Hammer = createIcon('Hammer');
-        const Scissors = createIcon('Scissors');
-        const Paintbrush = createIcon('Paintbrush');
-        const PaintBucket = createIcon('PaintBucket');
-        const Car = createIcon('Car');
-        const Home = createIcon('Home');
-        const Key = createIcon('Key');
-        const Zap = createIcon('Zap');
-        const Settings = createIcon('Settings');
-        const Tool = createIcon('Tool');
-        const Drill = createIcon('Drill');
-        
-        // Beauty & Wellness
-        const Sparkles = createIcon('Sparkles');
-        const Smile = createIcon('Smile');
-        const Eye = createIcon('Eye');
-        
-        // Education & Learning
-        const Book = createIcon('Book');
-        const BookOpen = createIcon('BookOpen');
-        const GraduationCap = createIcon('GraduationCap');
-        
-        // Technology
-        const Laptop = createIcon('Laptop');
-        const Smartphone = createIcon('Smartphone');
-        const Wifi = createIcon('Wifi');
-        const Globe = createIcon('Globe');
-        
-        // Nature & Environment
-        const Leaf = createIcon('Leaf');
-        const Trees = createIcon('Trees');
-        const Sun = createIcon('Sun');
-        const Moon = createIcon('Moon');
-        
-        // Entertainment
-        const Music = createIcon('Music');
-        const Film = createIcon('Film');
-        const Camera = createIcon('Camera');
-        const Tv = createIcon('Tv');
-        
-        // Transportation
-        const Plane = createIcon('Plane');
-        const Train = createIcon('Train');
-        const Bus = createIcon('Bus');
-        
-        // Miscellaneous
-        const Gift = createIcon('Gift');
-        const Package = createIcon('Package');
-        const Image = createIcon('Image');
-        const Lightbulb = createIcon('Lightbulb');
-        const Percent = createIcon('Percent');
+    };
+    
+    // Create a Proxy that generates ANY Lucide icon automatically
+    const IconProxy = new Proxy({}, {
+        get: function(target, iconName) {
+            if (typeof iconName === 'string') {
+                // Create icon on-the-fly if it doesn't exist
+                if (!target[iconName]) {
+                    target[iconName] = createIcon(iconName);
+                }
+                return target[iconName];
+            }
+            return undefined;
+        }
+    });
+    
+    // Make ALL Lucide icons available via the Proxy
+    // When Claude uses <Phone />, it becomes IconProxy.Phone
+    ${generateIconExports()}
 
-        ${transformedCode}
+    ${transformedCode}
 
-        // Render the component
-        const rootElement = document.getElementById('root');
-        const root = ReactDOM.createRoot(rootElement);
-        root.render(React.createElement(BusinessWebsite));
-    </script>
+    const rootElement = document.getElementById('root');
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(React.createElement(BusinessWebsite));
+</script>
 </body>
 </html>
         `;
@@ -260,4 +144,19 @@ function transformCodeForBrowser(code: string): string {
     transformed = transformed.replace(/export default /g, '');
 
     return transformed;
+}
+function generateIconExports(): string {
+    // Common icons that Claude uses - proxy handles the rest
+    const commonIcons = [
+        'Phone', 'Mail', 'MapPin', 'MessageCircle', 'Facebook', 'Instagram',
+        'Twitter', 'Linkedin', 'Youtube', 'Star', 'Heart', 'Clock', 'Calendar',
+        'ChevronRight', 'ChevronDown', 'ChevronLeft', 'Menu', 'X', 'Check',
+        'Users', 'Award', 'Trophy', 'Target', 'Briefcase', 'Building', 'Store',
+        'Home', 'Car', 'Wrench', 'Hammer', 'Scissors', 'Paintbrush', 'Settings',
+        'Dumbbell', 'Activity', 'Stethoscope', 'Pill', 'ShoppingBag', 'CreditCard',
+        'DollarSign', 'Smile', 'Sparkles', 'Coffee', 'Pizza', 'Utensils',
+        'Scale', 'Weight', 'Calculator', 'Ruler', 'Package', 'Gift', 'Zap'
+    ];
+
+    return commonIcons.map(icon => `const ${icon} = IconProxy.${icon};`).join('\n    ');
 }
