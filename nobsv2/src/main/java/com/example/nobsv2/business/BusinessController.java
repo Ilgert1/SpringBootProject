@@ -71,6 +71,24 @@ public class BusinessController {
     public ResponseEntity<GetBusinessesService.BusinessStats> getStats() {
         return ResponseEntity.ok(getBusinessesService.getStats());
     }
+    @GetMapping("/{id}/render")
+    public ResponseEntity<String> renderWebsite(@PathVariable Integer id) {
+        System.out.println("🎨 RENDER ENDPOINT CALLED for business ID: " + id);
+
+        Business business = getBusinessService.getBusinessById(id);
+
+        if (business.getGeneratedWebsiteCode() == null) {
+            System.out.println("❌ No generated code found for business ID: " + id);
+            return ResponseEntity.notFound().build();
+        }
+
+        System.out.println("✅ Returning generated code for: " + business.getName());
+
+        return ResponseEntity
+                .ok()
+                .header("Content-Type", "text/html; charset=UTF-8")
+                .body(business.getGeneratedWebsiteCode());
+    }
 
     // Get single business
     @GetMapping("/{id}")

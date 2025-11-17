@@ -19,27 +19,29 @@ public class WebsiteGenerationService {
 
     @Transactional
     public WebsiteGenerationResult generateWebsite(Integer businessId) {
-        // Get business
         Business business = businessRepository.findById(businessId)
                 .orElseThrow(() -> new RuntimeException("Business not found"));
 
         log.info("Generating website for business: {}", business.getName());
 
-        // Build the prompt
         String prompt = buildWebsitePrompt(business);
         String systemPrompt = buildSystemPrompt();
 
         // Generate with Claude
         String generatedCode = claudeApiService.generateContent(prompt, systemPrompt);
+        log.info("✅ Generated code length: {} characters", generatedCode.length());
 
-        // Extract the React component code (remove any markdown formatting)
+        // Extract the React component code
         String cleanCode = extractCode(generatedCode);
+        log.info("✅ Cleaned code length: {} characters", cleanCode.length());
+        log.info("🔍 First 100 chars of clean code: {}", cleanCode.substring(0, Math.min(100, cleanCode.length())));
 
         // Save the code to database
-        Business saved = updateBusinessService.markWebsiteGenerated(businessId, "Generated", cleanCode);
-        log.info("Saved business: websiteGenerated={}, code length={}", saved.getWebsiteGenerated(),
-                saved.getGeneratedWebsiteCode() == null ? 0 : saved.getGeneratedWebsiteCode().length());
+        String previewUrl = "https://springbootproject-production-9187.up.railway.app/api/businesses/" + businessId + "/render";
 
+        log.info("💾 About to save - businessId: {}, url: {}, codeLength: {}", businessId, previewUrl, cleanCode.length());
+        Business updated = updateBusinessService.markWebsiteGenerated(businessId, previewUrl, cleanCode);
+        log.info("✅ Saved! Generated code in DB: {}", updated.getGeneratedWebsiteCode() != null ? "YES" : "NO");
 
         WebsiteGenerationResult result = new WebsiteGenerationResult();
         result.setBusinessId(businessId);

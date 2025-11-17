@@ -89,6 +89,6 @@ public class PythonCrawlerService {
      */
     private String getScriptPath() {
         // Get the path relative to the project root
-        return "/Users/ilgertshehaj/PycharmProjects/PythonProject/busniness_crawler";
+        return "/Users/ilgertshehaj/PycharmProjects/PythonProject/busniness_crawler.py";
     }
 }
