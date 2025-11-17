@@ -10,7 +10,7 @@ export default function PreviewPage() {
     const [loading, setLoading] = useState(true);
 
     const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://springbootproject-production-9187.up.railway.app";
-    const renderUrl = `${API_BASE}/api/businesses/${businessId}/render`;
+    const renderUrl = `/api/render/${businessId}`;
 
     return (
         <div className="min-h-screen bg-gray-100">
