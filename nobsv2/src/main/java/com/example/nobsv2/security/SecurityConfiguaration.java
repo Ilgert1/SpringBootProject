@@ -48,6 +48,8 @@ public class SecurityConfiguaration {
         http.cors(cors -> cors.configurationSource(corsSource))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
@@ -56,6 +58,7 @@ public class SecurityConfiguaration {
                         .requestMatchers("/api/businesses/with-generated-website").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/api/businesses/with-generated-website").permitAll()
                         .requestMatchers("/api/leads/**").authenticated()
+                        .requestMatchers("/api/businesses/*/render").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").hasAnyRole("BASIC", "SUPERUSER")
                         .requestMatchers("/products/**", "/admin/**").hasRole("SUPERUSER")
                         .anyRequest().authenticated())
