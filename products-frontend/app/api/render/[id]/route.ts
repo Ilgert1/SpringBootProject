@@ -86,7 +86,8 @@ export async function GET(
         };
         
         // Create all common icons - COMPREHENSIVE LIST
-        
+        const Scale = createIcon('Scale');
+        const Balance = createIcon('Balance');
         // Contact & Social
         const Phone = createIcon('Phone');
         const Mail = createIcon('Mail');
