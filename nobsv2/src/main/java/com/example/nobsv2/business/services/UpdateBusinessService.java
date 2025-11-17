@@ -76,12 +76,13 @@ public class UpdateBusinessService {
     }
 
     @Transactional
-    public Business markWebsiteGenerated(Integer id, String websiteUrl) {
+    public Business markWebsiteGenerated(Integer id, String websiteUrl, String generatedCode) {
         Business business = businessRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Business not found with id: " + id));
 
         business.setWebsiteGenerated(true);
         business.setGeneratedWebsiteUrl(websiteUrl);
+        business.setGeneratedWebsiteCode(generatedCode);  // Save the code
         business.setLeadStatus(LeadStatus.DEMO_SENT);
 
         return businessRepository.save(business);
