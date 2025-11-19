@@ -4,8 +4,23 @@
 import Link from "next/link";
 import React from "react";
 import {router} from "next/client";
+import { motion } from "framer-motion"
+import { Variants} from "framer-motion";
 
 export default function infoAboutUs(){
+    const fadeUp: Variants = {
+        hidden: { opacity: 0, y: 18 },
+        show: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+                // numeric bezier is strongly typed and accepted by Variants
+                ease: [0.22, 1, 0.36, 1],
+            },
+        },
+    };
+
     return(
         <main className="relative min-h-screen bg-white overflow-hidden flex flex-col">
             <div className="absolute top-4 right-4 z-20">
@@ -21,7 +36,15 @@ export default function infoAboutUs(){
 
             <section className="relative z-10 flex flex-col items-center justify-center text-center min-h-screen px-6 py-32">
                 <div className="max-w-5xl w-full">
-                    <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-gray-900 mb-8">
+                    <motion.h1
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true, amount: 0.5 }}
+                        variants={fadeUp}
+                        style={{ WebkitFontSmoothing: "antialiased" }}
+                        className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-gray-900 mb-8"
+
+                    >
                         <span className="block">
                             <span className="bg-gradient-to-r from-blue-600 to-cyan-500 text-transparent bg-clip-text">
                                 Find your leads
@@ -30,7 +53,7 @@ export default function infoAboutUs(){
                         <span className="block text-gray-800 mt-3 text-3xl sm:text-4xl lg:text-5xl font-semibold">
                             With Elevare
                         </span>
-                    </h1>
+                    </motion.h1>
 
                     <p className="text-gray-600 text-lg sm:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
                         Elevare connects businesses without websites to modern, auto-generated web pages —
@@ -57,7 +80,10 @@ export default function infoAboutUs(){
                             <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
 
                                 {/* Basic Plan - White */}
-                                <div className="border-2 border-black rounded-xl p-6 flex flex-col justify-between flex-1 min-h-[600px] bg-white shadow-lg shadow-black/20 hover:shadow-xl transition">
+                                <motion.div
+                                    whileHover={{ scale: 1.00, y: -3 }}
+                                    transition={{ type: "spring", stiffness: 200, damping: 7 }}
+                                    className="border-2 border-black rounded-xl p-6 flex flex-col justify-between flex-1 min-h-[600px] bg-white shadow-lg shadow-black/20 hover:shadow-xl transition">
                                     <div className="text-left space-y-3">
                                         <h1 className="bg-gradient-to-r from-blue-600 via-cyan-400 to-cyan-500 text-transparent bg-clip-text text-2xl md:text-3xl font-bold">
                                             Basic Plan
@@ -80,10 +106,13 @@ export default function infoAboutUs(){
                                             <p className="text-black text-xl">4000 tokens</p>
                                         </div>
                                     </div>
-                                </div>
+                                </motion.div>
 
                                 {/* Premium Plan - Black */}
-                                <div className="border-2 border-white rounded-xl p-6 flex flex-col flex-1 min-h-[600px] bg-black shadow-blue-800 hover:shadow-xl transition">
+                                <motion.div
+                                    whileHover={{ scale: 1.00, y: -3 }}
+                                    transition={{ type: "spring", stiffness: 200, damping: 7 }}
+                                    className="border-2 border-white rounded-xl p-6 flex flex-col flex-1 min-h-[600px] bg-black shadow-blue-800 hover:shadow-xl transition">
                                     <div className="text-left space-y-3">
                                         <h1 className="inline-block w-full bg-gradient-to-r from-blue-500 via-cyan-500 to-cyan-400 text-transparent bg-clip-text text-2xl md:text-3xl font-bold">
                                             Premium Plan
@@ -110,10 +139,13 @@ export default function infoAboutUs(){
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
+                                </motion.div>
 
                                 {/* Enterprise Plan - White */}
-                                <div className="border-2 border-black rounded-xl p-6 flex flex-col justify-between flex-1 min-h-[600px] bg-white shadow-lg shadow-black/20 hover:shadow-xl transition">
+                                <motion.div
+                                    whileHover={{ scale: 1.00, y: -3 }}
+                                    transition={{ type: "spring", stiffness: 200, damping: 7 }}
+                                    className="border-2 border-black rounded-xl p-6 flex flex-col justify-between flex-1 min-h-[600px] bg-white shadow-lg shadow-black/20 hover:shadow-xl transition">
                                     <div className="text-left space-y-3">
                                         <h1 className="bg-gradient-to-r from-blue-600 via-cyan-400 to-cyan-500 text-transparent bg-clip-text text-2xl md:text-3xl font-bold">Enterprise Plan</h1>
                                         <p className="mt-2 text-black text-4xl font-bold">$199.99</p>
@@ -134,7 +166,7 @@ export default function infoAboutUs(){
                                             <p className="text-black text-xl">10000+ tokens</p>
                                         </div>
                                     </div>
-                                </div>
+                                </motion.div>
 
                             </div>
                         </div>

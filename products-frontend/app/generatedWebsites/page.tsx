@@ -2,11 +2,17 @@
 
 import { useEffect, useState } from "react";
 import type { business } from "@/app/types/business";
+import ContactBusinessModal from "@/app/products/components/ContactBusinessModal";
 
 export default function GeneratedWebsitesPage() {
     const [businesses, setBusinesses] = useState<business[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const [contactBusinessId, setContactBusinessId] = useState<number | null>(null);
+    const [generatedMessage, setGeneratedMessage] = useState("");
+    const [isGenerating, setIsGenerating] = useState(false);
+
 
     // Update this if your backend is on a different domain
     const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://springbootproject-production-9187.up.railway.app";
@@ -102,6 +108,18 @@ export default function GeneratedWebsitesPage() {
                                 >
                                     Preview Website
                                 </a>
+                                <button
+                                    onClick={() => setContactBusinessId(b.id ?? null)}
+                                    className="px-4 py-2 border-2 border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-all"
+                                >
+                                    📧 Contact Business
+                                </button>
+                                {contactBusinessId &&
+                                <ContactBusinessModal businessId={contactBusinessId} onClose={() => setContactBusinessId(null)}
+
+                                />
+                                }
+
                             </div>
                         </div>
                     ))}

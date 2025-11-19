@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import {router} from "next/client";
 
 export default function WelcomePage() {
     const [navOpen, setNavOpen] = useState(false);
@@ -103,18 +104,11 @@ export default function WelcomePage() {
             <div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-20">
                 <div className="group relative w-48">
                     {/* Visible tab */}
-                    <div className="bg-blue-600 text-white px-4 py-2 rounded-l-xl cursor-pointer text-lg font-semibold shadow-lg shadow-blue-600/20">
+                    <Link href={'/platform'} className="bg-blue-600 text-white px-4 py-2 rounded-l-xl cursor-pointer text-lg font-semibold shadow-lg shadow-blue-600/20">
                         What We Do
-                    </div>
+                    </Link>
 
                     {/* Hidden panel */}
-                    <div className="absolute right-full top-0 w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-6 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">What We Do</h2>
-                        <p className="text-gray-700 text-lg leading-relaxed">
-                            We find businesses without websites and automatically generate professional AI-powered websites for them,
-                            helping them grow their online presence effortlessly.
-                        </p>
-                    </div>
                 </div>
             </div>
 

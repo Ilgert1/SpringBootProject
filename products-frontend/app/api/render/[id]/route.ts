@@ -226,6 +226,7 @@ export async function GET(
         const Image = createIcon('Image');
         const Lightbulb = createIcon('Lightbulb');
         const Percent = createIcon('Percent');
+        const Banknote = createIcon('Banknote');
 
         ${transformedCode}
 
