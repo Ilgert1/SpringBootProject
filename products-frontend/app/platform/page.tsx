@@ -212,7 +212,7 @@ export default function PlatformPage() {
 
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
-                            { id: 112, name: "Cardtronics", type: "Bank", city: "Boston, MA" },
+                            { id: 52, name: "Cardtronics", type: "Bank", city: "Boston, MA(deployemnt)" },
                             { id: 155, name: "Footprints Kids Yoga", type: "Day Care", city: "Quincy, MA" },
                             { id: 382, name: "Leamington Hotel", type: "Hotel", city: "Miami" },
                         ].map((business, idx) => (
