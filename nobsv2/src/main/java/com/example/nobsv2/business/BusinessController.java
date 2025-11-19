@@ -6,8 +6,10 @@ import com.example.nobsv2.business.model.Business.LeadStatus;
 import com.example.nobsv2.business.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class BusinessController {
     private final DeleteBusinessService deleteBusinessService;
     private final ImportBusinessesService importBusinessesService;
     private final WebsiteGenerationService websiteGenerationService;
+    private final MessageGenerationService messageGenerationService;
 
     // Get all businesses
     @GetMapping
@@ -128,6 +131,22 @@ public class BusinessController {
         return ResponseEntity.ok(updateBusinessService.markAsContacted(id, notes));
     }
 
+    @PostMapping("/generate-outreach-message")
+    public ResponseEntity<String> generateOutreachMessage(
+            @RequestBody OutreachMessageRequest request) {
+
+        String message = messageGenerationService.generateOutreachMessage(
+                request.getBusinessName(),
+                request.getBusinessType(),
+                request.getAddress()
+        );
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(message);
+    }
+
+
     @PostMapping("/{id}/generate-website")
     public ResponseEntity<WebsiteGenerationService.WebsiteGenerationResult> generateWebsite(
             @PathVariable Integer id) {
@@ -154,6 +173,14 @@ public class BusinessController {
         response.setGeneratedAt(business.getUpdatedAt().toString());
 
         return ResponseEntity.ok(response);
+    }
+
+    //message generation dto
+    @lombok.Data
+    public static class OutreachMessageRequest {
+        private String businessName;
+        private String businessType;
+        private String address;
     }
 
     // Add this DTO at the bottom with your other DTOs
