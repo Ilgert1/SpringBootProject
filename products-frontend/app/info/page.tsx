@@ -1,11 +1,9 @@
 "use client";
 
-
 import Link from "next/link";
 import React from "react";
-import {router} from "next/client";
-import { motion } from "framer-motion"
-import { Variants} from "framer-motion";
+import { motion , Variants} from "framer-motion"
+
 
 export default function infoAboutUs(){
     const fadeUp: Variants = {

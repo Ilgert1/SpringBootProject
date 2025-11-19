@@ -1,8 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { motion } from "framer-motion"
-import { Variants} from "framer-motion";
+import { motion , Variants} from "framer-motion"
 
 export default function PlatformPage() {
     const router = useRouter();
