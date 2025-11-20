@@ -1,12 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion , Variants} from "framer-motion"
+import MessageCard from "@/app/products/components/MessageCard";
+
 
 export default function PlatformPage() {
     const router = useRouter();
     const [expandedId, setExpandedId] = useState<number | null>(null);
-
 
     const fadeUp: Variants = {
         hidden: { opacity: 0, y: 18 },
@@ -190,6 +191,48 @@ export default function PlatformPage() {
                                 <h3 className="text-lg font-semibold mb-2">{s.title}</h3>
                                 <p className="text-slate-600 text-sm">{s.desc}</p>
                             </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Message Generation Section */}
+            <section className="py-24 px-6 bg-gradient-to-br from-slate-50 to-blue-50">
+                <div className="max-w-6xl mx-auto">
+                    <motion.h2
+                        initial="hidden"
+                        whileInView="show"
+                        variants={fadeUp}
+                        className="text-3xl md:text-4xl font-bold text-center mb-4"
+                    >
+                        AI-Generated Outreach Messages
+                    </motion.h2>
+                    <p className="text-center text-slate-600 mb-12 max-w-2xl mx-auto">
+                        Our AI crafts personalized messages for each business. Watch them being generated in real-time.
+                    </p>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            {
+                                business: "Joe's Pizza",
+                                type: "Restaurant",
+                                message: "Hi! I came across Joe's Pizza and noticed you don't have a website yet. I've created a professional website showcasing your menu, location, and reviews that I'd love to show you. Would you be interested in seeing it? It's completely free to view!",
+                                delay: 0
+                            },
+                            {
+                                business: "FitZone Gym",
+                                type: "Fitness Center",
+                                message: "Hello! I noticed FitZone Gym doesn't have an online presence yet. I built a demo website featuring your services, class schedules, and membership options. In today's market, 85% of customers check websites before visiting. Would you like to see what I created for you?",
+                                delay: 0.3
+                            },
+                            {
+                                business: "Smile Dental",
+                                type: "Dentist",
+                                message: "Hi there! I saw that Smile Dental could benefit from a professional website. I've designed one highlighting your services, team, and patient testimonials. It could help you attract new patients and make scheduling easier. Would you like to take a look?",
+                                delay: 0.6
+                            }
+                        ].map((example, idx) => (
+                            <MessageCard key={idx} {...example} />
                         ))}
                     </div>
                 </div>
