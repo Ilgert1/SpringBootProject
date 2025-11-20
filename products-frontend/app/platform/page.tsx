@@ -91,7 +91,7 @@ export default function PlatformPage() {
                         className="flex gap-4 justify-center"
                     >
                         <button
-                            onClick={() => router.push("/products")}
+                            onClick={() => router.push("/info")}
                             className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg hover:scale-[1.02] transform transition"
                         >
                             Start Free Trial
