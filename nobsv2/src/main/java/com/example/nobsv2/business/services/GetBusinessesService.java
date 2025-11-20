@@ -3,6 +3,7 @@ package com.example.nobsv2.business.services;
 import com.example.nobsv2.business.model.Business;
 import com.example.nobsv2.business.model.Business.LeadStatus;
 import com.example.nobsv2.business.repository.BusinessRepository;
+import com.example.nobsv2.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,51 +14,67 @@ import java.util.List;
 public class GetBusinessesService {
 
     private final BusinessRepository businessRepository;
+    private final UserService userService;
 
     public List<Business> getAllBusinesses() {
-        return businessRepository.findAll();
+        String username = userService.getCurrentUsername();
+        return businessRepository.findByUserUsername(username);
     }
 
     public List<Business> getBusinessesWithoutWebsite() {
-        return businessRepository.findBusinessesWithoutWebsite();
-    }
-
-    public List<Business> getBusinessesByStatus(LeadStatus status) {
-        return businessRepository.findByLeadStatus(status);
-    }
-
-    public List<Business> getUncontactedLeads() {
-        return businessRepository.findUncontactedLeads();
-    }
-
-    public List<Business> getBusinessesByType(String type) {
-        return businessRepository.findByType(type);
-    }
-
-    public List<Business> searchBusinesses(String keyword) {
-        return businessRepository.searchBusinesses(keyword);
+        String username = userService.getCurrentUsername();
+        return businessRepository.findByUserUsernameWithoutWebsite(username);
     }
 
     public List<Business> getBusinessesWithGeneratedWebsites() {
-        return businessRepository.findByWebsiteGeneratedTrue();
+        String username = userService.getCurrentUsername();
+        return businessRepository.findByUserUsernameWithWebsiteGenerated(username);
     }
 
-    // Get statistics
-    public BusinessStats getStats() {
-        long total = businessRepository.count();
-        long withoutWebsite = businessRepository.countBusinessesWithoutWebsite();
-        long newLeads = businessRepository.countByLeadStatus(LeadStatus.NEW);
-        long converted = businessRepository.countByLeadStatus(LeadStatus.CONVERTED);
+    public List<Business> getUncontactedLeads() {
+        String username = userService.getCurrentUsername();
+        return businessRepository.findByUserUsernameAndContactedFalse(username);
+    }
 
-        return new BusinessStats(total, withoutWebsite, newLeads, converted);
+    public List<Business> getBusinessesByStatus(LeadStatus status) {
+        String username = userService.getCurrentUsername();
+        return businessRepository.findByUserUsernameAndLeadStatus(username, status);
+    }
+
+    public List<Business> getBusinessesByType(String type) {
+        String username = userService.getCurrentUsername();
+        return businessRepository.findByUserUsernameAndTypesContaining(username, type);
+    }
+
+    public List<Business> searchBusinesses(String keyword) {
+        String username = userService.getCurrentUsername();
+        return businessRepository.searchByUserUsernameAndKeyword(username, keyword);
+    }
+
+    public BusinessStats getStats() {
+        String username = userService.getCurrentUsername();
+        List<Business> allBusinesses = businessRepository.findByUserUsername(username);
+
+        long totalLeads = allBusinesses.size();
+        long hotLeads = allBusinesses.stream()
+                .filter(Business::needsWebsite)
+                .count();
+        long contacted = allBusinesses.stream()
+                .filter(b -> Boolean.TRUE.equals(b.getContacted()))
+                .count();
+        long websitesGenerated = allBusinesses.stream()
+                .filter(b -> Boolean.TRUE.equals(b.getWebsiteGenerated()))
+                .count();
+
+        return new BusinessStats(totalLeads, hotLeads, contacted, websitesGenerated);
     }
 
     @lombok.Data
     @lombok.AllArgsConstructor
     public static class BusinessStats {
-        private long totalBusinesses;
-        private long businessesWithoutWebsite;
-        private long newLeads;
-        private long converted;
+        private long totalLeads;
+        private long hotLeads;
+        private long contacted;
+        private long websitesGenerated;
     }
 }

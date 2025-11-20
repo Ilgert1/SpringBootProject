@@ -3,6 +3,8 @@ package com.example.nobsv2.business.services;
 import com.example.nobsv2.business.dto.BusinessImportDTO;
 import com.example.nobsv2.business.model.Business;
 import com.example.nobsv2.business.repository.BusinessRepository;
+import com.example.nobsv2.security.CustomUser;
+import com.example.nobsv2.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,9 +18,12 @@ import java.util.Optional;
 public class ImportBusinessesService {
 
     private final BusinessRepository businessRepository;
+    private final UserService userService;  // Add this
 
     @Transactional
     public ImportResult importBusinesses(List<BusinessImportDTO> businesses) {
+        CustomUser currentUser = userService.getCurrentUser();
+
         int imported = 0;
         int skipped = 0;
         int updated = 0;
@@ -26,18 +31,22 @@ public class ImportBusinessesService {
 
         for (BusinessImportDTO dto : businesses) {
             try {
-                // Check if business already exists by place_id
-                Optional<Business> existing = businessRepository.findByPlaceId(dto.getPlace_id());
+                // Check if THIS USER already has this business
+                Optional<Business> existing = businessRepository.findByPlaceIdAndUserUsername(
+                        dto.getPlace_id(),
+                        currentUser.getUsername()  // Check per user!
+                );
 
                 if (existing.isPresent()) {
-                    // Update existing business
+                    // Update existing business for this user
                     Business business = existing.get();
                     updateBusinessFromDTO(business, dto);
                     businessRepository.save(business);
                     updated++;
                 } else {
-                    // Create new business
+                    // Create new business for this user
                     Business business = convertDTOToBusiness(dto);
+                    business.setUser(currentUser);
                     businessRepository.save(business);
                     imported++;
                 }

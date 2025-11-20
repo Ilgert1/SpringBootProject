@@ -12,6 +12,9 @@ public class Nobsv2Application {
 
 		System.out.println("Hello World!");
 		System.out.println("Testing nobsv2!");
+		System.out.println("GOOGLE_API_KEY env: " + System.getenv("GOOGLE_API_KEY"));
+
+
 
 		SpringApplication.run(Nobsv2Application.class, args);
 	}

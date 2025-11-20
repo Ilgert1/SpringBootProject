@@ -78,4 +78,47 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(jwt);
     }
+
+    /**
+     * Extract username from token
+     */
+    public String extractUsername(String token) {
+        try {
+            Claims claims = parse(token).getBody();
+            return claims.getSubject();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Validate token for a given username
+     */
+    public boolean validateToken(String token, String username) {
+        try {
+            Claims claims = parse(token).getBody();
+            String tokenUsername = claims.getSubject();
+            Date expiration = claims.getExpiration();
+
+            return tokenUsername.equals(username) && expiration.after(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Check if token is expired
+     */
+    public boolean isTokenExpired(String token) {
+        try {
+            Claims claims = parse(token).getBody();
+            return claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+
+
+
 }

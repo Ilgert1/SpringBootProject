@@ -1,13 +1,21 @@
 package com.example.nobsv2.business.model;
 
+import com.example.nobsv2.security.CustomUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.userdetails.User;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "businesses")
+@Table(name = "businesses",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"place_id" , "user_username"})
+    }
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -62,6 +70,11 @@ public class Business {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_username",referencedColumnName = "username", nullable = false)
+    @JsonIgnore
+    private CustomUser user;
 
     @PrePersist
     protected void onCreate() {

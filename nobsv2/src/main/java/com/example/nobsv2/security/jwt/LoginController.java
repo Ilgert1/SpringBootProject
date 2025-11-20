@@ -1,5 +1,6 @@
 package com.example.nobsv2.security.jwt;
 
+import com.example.nobsv2.security.CustomUserDetailService;
 import com.example.nobsv2.security.dto.AuthResponse;
 import com.example.nobsv2.security.dto.LoginRequest;
 import jakarta.servlet.http.Cookie;
@@ -16,10 +17,12 @@ public class LoginController {
 
     private final AuthenticationManager manager;
     private final JwtUtil jwt;
+    private final CustomUserDetailService customUserDetailService;
 
-    public LoginController(AuthenticationManager manager, JwtUtil jwt) {
+    public LoginController(AuthenticationManager manager, JwtUtil jwt, CustomUserDetailService customUserDetailService) {
         this.manager = manager;
         this.jwt = jwt;
+        this.customUserDetailService = customUserDetailService;
     }
 
     @PostMapping("/login")
@@ -36,8 +39,38 @@ public class LoginController {
         res.addCookie(cookie("refresh_token", refresh, 7 * 24 * 60 * 60));
 
         // Return token in response body for cross-domain access
-        return ResponseEntity.ok(new AuthResponse("logged_in", access));
+        return ResponseEntity.ok(new AuthResponse("logged_in", access , refresh));
     }
+
+    //refresh token
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestHeader("Authorization") String authHeader, HttpServletResponse res) {
+        try {
+            // Extract token from "Bearer <token>"
+            String refreshToken = authHeader.replace("Bearer ", "");
+
+            // Validate refresh token and extract username
+            String username = jwt.extractUsername(refreshToken);
+
+            if (username != null && jwt.validateToken(refreshToken, username)) {
+                // Load user details
+                var userDetails = (User) customUserDetailService.loadUserByUsername(username);
+
+                // Generate new access token
+                String newAccessToken = jwt.generateAccessToken(userDetails);
+
+                // Update cookie
+                res.addCookie(cookie("access_token", newAccessToken, 30 * 60));
+
+                return ResponseEntity.ok(new AuthResponse("token_refreshed", newAccessToken));
+            } else {
+                return ResponseEntity.status(401).body(new AuthResponse("invalid_refresh_token"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(new AuthResponse("refresh_failed"));
+        }
+    }
+
 
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logout(HttpServletResponse res) {

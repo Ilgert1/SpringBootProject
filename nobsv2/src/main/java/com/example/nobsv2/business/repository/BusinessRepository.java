@@ -20,6 +20,11 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     @Query("SELECT b FROM Business b WHERE b.website = 'NO WEBSITE' OR b.website IS NULL OR b.website = ''")
     List<Business> findBusinessesWithoutWebsite();
 
+    @Query(
+            "SELECT b FROM Business b WHERE b.websiteGenerated = true OR b.generatedWebsiteCode != null"
+    )
+    List<Business> findBusinessesWithWebsiteGenerated();
+
     // Find by name (for search)
     List<Business> findByNameContainingIgnoreCase(String name);
 
@@ -56,4 +61,57 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     // Count businesses without website
     @Query("SELECT COUNT(b) FROM Business b WHERE b.website = 'NO WEBSITE' OR b.website IS NULL")
     long countBusinessesWithoutWebsite();
+    // =========== NEW USER_SPECIFIC QUERIES ===============
+    List<Business> findByUserUsername(String username);
+    // Get businesses with generated websites for a user
+    List<Business> findByUserUsernameAndWebsiteGenerated(String username, Boolean websiteGenerated);
+
+    // Find by place_id AND user
+    Optional<Business> findByPlaceIdAndUserUsername(String placeId, String username);
+
+    @Query("SELECT b FROM Business b WHERE b.user.username = :username AND " +
+            "(b.websiteGenerated = true OR b.generatedWebsiteCode IS NOT NULL)")
+    List<Business> findByUserUsernameWithWebsiteGenerated(@Param("username") String username);
+
+    // Get businesses without websites for a user
+    @Query("SELECT b FROM Business b WHERE b.user.username = :username AND " +
+            "(b.website = 'NO WEBSITE' OR b.website IS NULL OR b.website = '')")
+    List<Business> findByUserUsernameWithoutWebsite(@Param("username") String username);
+
+    // Get uncontacted leads for a user
+    @Query("SELECT b FROM Business b WHERE b.user.username = :username AND b.contacted = false AND " +
+            "(b.website = 'NO WEBSITE' OR b.website IS NULL)")
+    List<Business> findByUserUsernameAndContactedFalse(@Param("username") String username);
+
+    // Get businesses by status for a user
+    List<Business> findByUserUsernameAndLeadStatus(String username, LeadStatus status);
+
+    // Search businesses for a user
+    @Query("SELECT b FROM Business b WHERE b.user.username = :username AND " +
+            "(b.name LIKE %:keyword% OR b.address LIKE %:keyword% OR b.types LIKE %:keyword%)")
+    List<Business> searchByUserUsernameAndKeyword(@Param("username") String username, @Param("keyword") String keyword);
+
+    // Get businesses by type for a user
+    @Query("SELECT b FROM Business b WHERE b.user.username = :username AND b.types LIKE %:type%")
+    List<Business> findByUserUsernameAndTypesContaining(@Param("username") String username, @Param("type") String type);
+
+    // Count stats for a user
+    long countByUserUsername(String username);
+
+    @Query("SELECT COUNT(b) FROM Business b WHERE b.user.username = :username AND " +
+            "(b.website = 'NO WEBSITE' OR b.website IS NULL)")
+    long countByUserUsernameWithoutWebsite(@Param("username") String username);
+
+    long countByUserUsernameAndLeadStatus(String username, LeadStatus status);
+
+
+
+
+
+
+
+
+
+
+
 }
