@@ -19,10 +19,19 @@ export async function login(username: string, password: string) {
     } else {
         console.log('No accessToken in response!'); // Debug log
     }
+
+    if(data.refresh_token){
+        console.log("Saving refresh token to localStorage");
+        localStorage.setItem('refresh_token' , data.refresh_token);
+    }else{
+        console.log('No refresh_token in response')
+    }
+
 }
 
 export async function logout() {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
         method: "POST",
         credentials: "include",
