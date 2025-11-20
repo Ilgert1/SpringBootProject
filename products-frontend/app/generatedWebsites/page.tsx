@@ -20,14 +20,35 @@ export default function GeneratedWebsitesPage() {
     useEffect(() => {
         async function fetchBusinesses() {
             try {
+                const token = localStorage.getItem('access_token');
+
+                if (!token) {
+                    throw new Error('Not authenticated');
+                }
+
                 const res = await fetch(
                     `${API_BASE}/api/businesses/with-generated-website`,
-                    { cache: "no-store" }
+                    {
+                        cache: "no-store",
+                        headers: {
+                            'Authorization': `Bearer ${token}`  // ✅ Add this!
+                        }
+                    }
                 );
-                if (!res.ok) throw new Error("Failed to fetch businesses");
+
+                if (!res.ok) {
+                    if (res.status === 401 || res.status === 403) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    throw new Error("Failed to fetch businesses");
+                }
+
                 const data: business[] = await res.json();
+                console.log('Loaded generated websites:', data.length); // Debug
                 setBusinesses(data ?? []);
             } catch (err: any) {
+                console.error('Error loading generated websites:', err);
                 setError(err.message);
             } finally {
                 setLoading(false);
