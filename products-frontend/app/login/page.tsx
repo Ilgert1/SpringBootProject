@@ -32,14 +32,6 @@ export default function LoginPage() {
     function Logo() {
         return (
             <Link href="/" className="inline-flex items-center gap-3" aria-label="Elevare home">
-                <img
-                    src="/justLogo.png"
-                    alt="Elevare logo"
-                    width={36}
-                    height={36}
-                    loading="lazy"
-                    className="w-9 h-9 object-contain"
-                />
                 <span className="font-semibold text-gray-900 text-lg tracking-tight">Elevare</span>
             </Link>
         );

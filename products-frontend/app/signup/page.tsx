@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {toast} from "react-hot-toast";
 
 type StrengthLevel = "weak" | "fair" | "good" | "strong";
 
@@ -113,7 +115,7 @@ export default function SignUpPage() {
                 throw new Error(txt || `HTTP ${res.status}`);
             }
 
-            setMsg("Account created! You can now log in.");
+            toast("Account created! You can now log in.");
             router.push("/login");
         } catch (e: any) {
             setError(e?.message ?? "Sign up failed");
@@ -128,8 +130,9 @@ export default function SignUpPage() {
             <nav className="fixed top-0 w-full z-50 bg-white border-b border-gray-200">
                 <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-5">
                     <div className="flex items-center gap-3">
-                        <img src="/justLogo.png" alt="Elevare" className="w-9 h-9" />
-                        <span className="text-gray-900 font-semibold text-lg tracking-tight">Elevare</span>
+                        <Link href='/welcome'>
+                            <span className="text-gray-900 font-semibold text-lg tracking-tight" >Elevare</span>
+                        </Link>
                     </div>
 
                     <div className="flex items-center gap-8">

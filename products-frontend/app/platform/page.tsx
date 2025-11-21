@@ -255,9 +255,9 @@ export default function PlatformPage() {
 
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
-                            { id: 52, name: "Cardtronics", type: "Bank", city: "Boston, MA(deployemnt)" },
-                            { id: 155, name: "Footprints Kids Yoga", type: "Day Care", city: "Quincy, MA" },
-                            { id: 382, name: "Leamington Hotel", type: "Hotel", city: "Miami" },
+                            { id: 740, name: "Cardtronics", type: "Bank", city: "Boston, MA(deployemnt)" },
+                            { id: 781, name: "Footprints Kids Yoga", type: "Day Care", city: "Quincy, MA" },
+                            { id: 770, name: "Leamington Hotel", type: "Hotel", city: "Miami" },
                         ].map((business, idx) => (
                             <motion.div
                                 key={idx}
@@ -321,9 +321,9 @@ export default function PlatformPage() {
                             <div className="flex items-center justify-between p-4 border-b border-gray-200">
                                 <h3 className="text-lg font-semibold">
                                     {[
-                                        { id: 112, name: "Cardtronics" },
-                                        { id: 155, name: "Footprints Kids Yoga" },
-                                        { id: 382, name: "Leamington Hotel" },
+                                        { id: 740, name: "Cardtronics" },
+                                        { id: 770, name: "Footprints Kids Yoga" },
+                                        { id: 781, name: "Leamington Hotel" },
                                     ].find(b => b.id === expandedId)?.name}
                                 </h3>
                                 <button

@@ -29,32 +29,39 @@ function formatDate(dateString: string): string {
 }
 
 // Extract city, state from address
+// Extract city, state from address - SIMPLIFIED
 function extractCityState(address: string | undefined): string {
     if (!address) return "";
 
-    // Split by comma
+    // Example: "123 Main St, Boston, MA 02118, USA"
+    // Split by comma and get second-to-last (city) and last with state
     const parts = address.split(',').map(p => p.trim());
 
-    // If only one part (no commas), it's likely just a city
-    if (parts.length === 1) {
-        const city = parts[0].split(/\d/)[0].trim(); // Remove numbers
-        return city;
+    if (parts.length < 2) return parts[0] || "";
+
+    // Get city (usually second to last or third to last)
+    let city = "";
+    let state = "";
+
+    // Find the part with 2-letter state code
+    for (let i = parts.length - 1; i >= 0; i--) {
+        const stateMatch = parts[i].match(/\b([A-Z]{2})\b/);
+        if (stateMatch) {
+            state = stateMatch[1];
+            // City is the part before the state
+            if (i > 0) {
+                city = parts[i - 1];
+            }
+            break;
+        }
     }
 
-    // Get the last part
-    const lastPart = parts[parts.length - 1];
-
-    // Check if last part has a state code (2 capital letters)
-    const stateMatch = lastPart.match(/\b[A-Z]{2}\b/);
-
-    if (stateMatch) {
-        // Has state - get city from second to last part
-        const city = parts[parts.length - 2];
-        return `${city}, ${stateMatch[0]}`;
-    } else {
-        // No state - just use the last part as city
-        return lastPart;
+    if (city && state) {
+        return `${city}, ${state}`;
     }
+
+    // Fallback: return second part if it exists
+    return parts[parts.length >= 2 ? parts.length - 2 : 0];
 }
 
 // Normalize city names (Dorchester → Boston, etc)
@@ -116,18 +123,50 @@ function formatTypeName(type: string): string {
 }
 
 // Group leads by date
-function groupByDate(leads: business[]): Record<string, business[]> {
-    const grouped: Record<string, business[]> = {};
+function groupByRelativeDate(leads: business[]): Record<string, business[]> {
+    const grouped: Record<string, business[]> = {
+        "Today": [],
+        "Yesterday": [],
+        "This Week": [],
+        "This Month": [],
+        "Older": []
+    };
+
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterdayStart = new Date(todayStart);
+    yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+    const weekStart = new Date(todayStart);
+    weekStart.setDate(weekStart.getDate() - 7);
+    const monthStart = new Date(todayStart);
+    monthStart.setMonth(monthStart.getMonth() - 1);
 
     leads.forEach(lead => {
-        const dateKey = lead.created_at
-            ? new Date(lead.created_at).toISOString().split('T')[0]
-            : new Date().toISOString().split('T')[0];
-
-        if (!grouped[dateKey]) {
-            grouped[dateKey] = [];
+        if (!lead.createdAt) {
+            grouped["Older"].push(lead);
+            return;
         }
-        grouped[dateKey].push(lead);
+
+        const createdDate = new Date(lead.createdAt);
+
+        if (createdDate >= todayStart) {
+            grouped["Today"].push(lead);
+        } else if (createdDate >= yesterdayStart) {
+            grouped["Yesterday"].push(lead);
+        } else if (createdDate >= weekStart) {
+            grouped["This Week"].push(lead);
+        } else if (createdDate >= monthStart) {
+            grouped["This Month"].push(lead);
+        } else {
+            grouped["Older"].push(lead);
+        }
+    });
+
+    // Remove empty groups
+    Object.keys(grouped).forEach(key => {
+        if (grouped[key].length === 0) {
+            delete grouped[key];
+        }
     });
 
     return grouped;
@@ -161,36 +200,46 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
             if (businessLocation !== locationFilter) return false;
         }
 
+
+
+
         // Date filter
-        if (dateFilter !== "all" && b.created_at) {
-            const createdDate = new Date(b.created_at);
+        if (dateFilter !== "all" && b.createdAt) {
+            const createdDate = new Date(b.createdAt);
             const now = new Date();
 
+            // Normalize dates to midnight for comparison
+            const leadDate = new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
             if (dateFilter === "today") {
-                if (createdDate.toDateString() !== now.toDateString()) return false;
+                if (leadDate.getTime() !== todayStart.getTime()) return false;
+            } else if (dateFilter === "yesterday") {
+                const yesterdayStart = new Date(todayStart);
+                yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+                if (leadDate.getTime() !== yesterdayStart.getTime()) return false;
             } else if (dateFilter === "week") {
-                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                if (createdDate < weekAgo) return false;
+                const weekStart = new Date(todayStart);
+                weekStart.setDate(weekStart.getDate() - 7);
+                if (leadDate < weekStart) return false;
             } else if (dateFilter === "month") {
-                const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-                if (createdDate < monthAgo) return false;
+                const monthStart = new Date(todayStart);
+                monthStart.setMonth(monthStart.getMonth() - 1);
+                if (leadDate < monthStart) return false;
             }
         }
-
         return true;
     });
 
     // Group both by date
-    const hotLeadsByDate = groupByDate(filteredHotLeads);
-    const allLeadsByDate = groupByDate(leads);
+    // Group both by RELATIVE date (not absolute)
+    const hotLeadsByDate = groupByRelativeDate(filteredHotLeads);
+    const allLeadsByDate = groupByRelativeDate(leads);
 
-    // Sort dates (newest first)
-    const hotDates = Object.keys(hotLeadsByDate).sort((a, b) =>
-        new Date(b).getTime() - new Date(a).getTime()
-    );
-    const allDates = Object.keys(allLeadsByDate).sort((a, b) =>
-        new Date(b).getTime() - new Date(a).getTime()
-    );
+// Get date groups in order
+    const dateOrder = ["Today", "Yesterday", "This Week", "This Month", "Older"];
+    const hotDates = dateOrder.filter(date => hotLeadsByDate[date]);
+    const allDates = dateOrder.filter(date => allLeadsByDate[date]);
 
     function toggleHotDate(date: string) {
         const newSet = new Set(expandedHotDates);
@@ -205,6 +254,15 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
         else newSet.add(date);
         setExpandedAllDates(newSet);
     }
+    //just for testing remove later
+    console.log(' Debug - First 3 leads created_at:',
+        filteredHotLeads.slice(0, 3).map(b => ({
+            name: b.name,
+            created_at: b.createdAt,
+            status: b.businessStatus,
+            parsed: new Date(b.createdAt || '').toLocaleDateString()
+        }))
+    );
 
     if (leads.length === 0) {
         return (
@@ -240,7 +298,7 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
                             >
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
-                            <h2 className="text-xl font-bold text-gray-900">🔥 HOT LEADS (No Website)</h2>
+                            <h2 className="text-xl font-bold text-gray-900"> HOT LEADS (No Website)</h2>
                         </div>
                         <div className="flex items-center gap-3">
                             <span className="px-4 py-1.5 bg-green-600 text-white rounded-full text-sm font-bold">
@@ -270,8 +328,9 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
                                             ))}
                                         </select>
                                     </div>
+                                    {/* Date Filter - SIMPLIFIED */}
                                     <div>
-                                        <label className="block text-xs font-medium text-gray-700 mb-1">Time Period</label>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1"> Time Period</label>
                                         <select
                                             value={dateFilter}
                                             onChange={(e) => setDateFilter(e.target.value)}
@@ -279,8 +338,9 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
                                         >
                                             <option value="all">All Time</option>
                                             <option value="today">Today</option>
-                                            <option value="week">Last 7 Days</option>
-                                            <option value="month">Last 30 Days</option>
+                                            <option value="yesterday">Yesterday</option>
+                                            <option value="week">This Week</option>
+                                            <option value="month">This Month</option>
                                         </select>
                                     </div>
                                 </div>
@@ -306,7 +366,7 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
                                                 >
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                                 </svg>
-                                                <span className="font-semibold text-gray-900">{formatDate(dateKey)}</span>
+                                                <span className="font-semibold text-gray-900">{dateKey}</span>
                                             </div>
                                             <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
                                                 {dateLeads.length} leads
@@ -347,7 +407,7 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
                         >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                        <h2 className="text-xl font-bold text-gray-900">📊 ALL BUSINESSES</h2>
+                        <h2 className="text-xl font-bold text-gray-900">ALL BUSINESSES</h2>
                     </div>
                     <div className="flex items-center gap-3">
                         <span className="px-4 py-1.5 bg-blue-600 text-white rounded-full text-sm font-bold">
@@ -380,7 +440,7 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
                                             >
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                             </svg>
-                                            <span className="font-semibold text-gray-900">{formatDate(dateKey)}</span>
+                                            <span className="font-semibold text-gray-900">{dateKey}</span>
                                         </div>
                                         <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
                                             {dateLeads.length} businesses

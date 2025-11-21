@@ -2,21 +2,14 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import {router} from "next/client";
+import {motion} from "framer-motion";
 
 export default function WelcomePage() {
     const [navOpen, setNavOpen] = useState(false);
-
+    const text = "What we do"
     function Logo() {
         return (
             <Link href="/" className="inline-flex items-center gap-3" aria-label="Elevare home">
-                <img
-                    src="/justLogo.png"
-                    alt="Elevare logo"
-                    width={40}
-                    height={40}
-                    loading="lazy"
-                    className="w-9 h-9 object-contain"
-                />
                 <span className="font-semibold text-gray-900 text-lg tracking-tight">Elevare</span>
             </Link>
         );
@@ -104,8 +97,27 @@ export default function WelcomePage() {
             <div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-20">
                 <div className="group relative w-48">
                     {/* Visible tab */}
-                    <Link href={'/platform'} className="bg-blue-600 text-white px-4 py-2 rounded-l-xl cursor-pointer text-lg font-semibold shadow-lg shadow-blue-600/20">
-                        What We Do
+                    <Link href={'/platform'} className="bg-blue-600 text-white px-4 py-2 rounded-xl cursor-pointer text-lg font-semibold shadow-lg shadow-blue-600/20">
+                        {text.split("").map((char, i) => (
+                            <motion.span
+                                key={i}
+                                className=""
+                                initial={{ y: 0 }}
+                                whileHover={{
+                                    y: [-2, 2, -2],
+                                    transition: {
+                                        repeat: Infinity,
+                                        duration: 0.6,
+                                        delay: i * 0.05,
+                                        ease: "easeInOut",
+                                    },
+                                }}
+                            >
+                                {char === " " ? "\u00A0" : char}
+                            </motion.span>
+                        ))}
+
+
                     </Link>
 
                     {/* Hidden panel */}

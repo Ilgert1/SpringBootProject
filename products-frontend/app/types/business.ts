@@ -9,7 +9,8 @@ export type business = {
     types?: string[];
     place_id?: string;
     business_status?: string;
-    created_at?:string;
+    createdAt?:string;
+    businessStatus?: string;
 
 
 }
