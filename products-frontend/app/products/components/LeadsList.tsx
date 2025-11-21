@@ -3,6 +3,7 @@ import type { business } from "@/app/types/business";
 import { useState, useEffect } from "react";
 import { api } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
+import { Toaster , toast} from "react-hot-toast";
 
 type LeadsListProps = {
     title: string;
@@ -54,7 +55,7 @@ export default function LeadsList({ title, data }: LeadsListProps) {
                 }));
                 setProgress(100);
                 setTimeout(() => {
-                    alert('Website generated successfully!');
+                    toast('Website generated successfully!');
                 }, 300);
             } else {
                 throw new Error(result.errorMessage || 'Generation failed');
@@ -63,7 +64,7 @@ export default function LeadsList({ title, data }: LeadsListProps) {
         } catch (e: any) {
             const errorMsg = e.message || 'Failed to generate website';
             setError(errorMsg);
-            alert('Error: ' + errorMsg);
+            toast('Error: ' + errorMsg);
         } finally {
             setGenerating(null);
         }

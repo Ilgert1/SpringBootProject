@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import type { business } from "@/app/types/business";
+import {toast} from "react-hot-toast";
 
 interface ContactBusinessModalProps {
     businessId: number;
@@ -78,7 +79,7 @@ export default function ContactBusinessModal({ businessId, onClose }: ContactBus
             }, 20);
 
         } catch (err) {
-            console.error('Error generating message:', err);
+            toast('Error generating message: ' + err);
             setGeneratedMessage("Hi! I came across your business...");
             setIsGenerating(false);
         }
