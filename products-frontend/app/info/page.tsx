@@ -76,6 +76,34 @@ export default function infoAboutUs(){
                             </div>
                             {/* Pricing Plans */}
                             <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                                {/*FREE TIER WHITE*/}
+                                <motion.div
+                                    whileHover={{ scale: 1.00, y: -3 }}
+                                    transition={{ type: "spring", stiffness: 200, damping: 7 }}
+                                    className="border-2 border-black rounded-xl p-6 flex flex-col justify-between flex-1 min-h-[600px] bg-white shadow-lg shadow-black/20 hover:shadow-xl transition">
+                                    <div className="text-left space-y-3">
+                                        <h1 className="bg-gradient-to-r from-blue-600 via-cyan-400 to-cyan-500 text-transparent bg-clip-text text-2xl md:text-3xl font-bold">
+                                            Free Trial
+                                        </h1>
+                                        <p className="text-black text-4xl font-bold mt-2">$0</p>
+                                        <p className="text-black text-xl">
+                                            Perfect for testing the platform
+                                        </p>
+                                    </div>
+                                    <div className="mt-6">
+                                        <button className="border-2 border-black rounded-2xl px-8 py-3 mx-auto text-black font-semibold hover:bg-black hover:text-white transform hover:scale-105 transition">
+                                            Start Free Trial
+                                        </button>
+
+                                        <div className="text-left mt-6 space-y-1">
+                                            <p className="text-black text-xl font-bold">What's included:</p>
+                                            <p className="text-black text-xl">1 search (60 businesses)</p>
+                                            <p className="text-black text-xl">2 website generations</p>
+                                            <p className="text-black text-xl">10 AI messages</p>
+                                            <p className="text-black text-xl">Basic features</p>
+                                        </div>
+                                    </div>
+                                </motion.div>
 
                                 {/* Basic Plan - White */}
                                 <motion.div
@@ -86,9 +114,9 @@ export default function infoAboutUs(){
                                         <h1 className="bg-gradient-to-r from-blue-600 via-cyan-400 to-cyan-500 text-transparent bg-clip-text text-2xl md:text-3xl font-bold">
                                             Basic Plan
                                         </h1>
-                                        <p className="text-black text-4xl font-bold mt-2">$19.99</p>
+                                        <p className="text-black text-4xl font-bold mt-2">$29/mo</p>
                                         <p className="text-black text-xl">
-                                            Best for scraping locally and finding businesses
+                                            Perfect for freelancers and small agencies
                                         </p>
                                     </div>
 
@@ -99,9 +127,10 @@ export default function infoAboutUs(){
 
                                         <div className="text-left mt-6 space-y-1">
                                             <p className="text-black text-xl font-bold">What's included:</p>
-                                            <p className="text-black text-xl">60 local businesses (with and without websites)</p>
-                                            <p className="text-black text-xl">10 website generations</p>
-                                            <p className="text-black text-xl">4000 tokens</p>
+                                            <p className="text-black text-xl">5 searches/month (300 businesses)</p>
+                                            <p className="text-black text-xl">20 website generations</p>
+                                            <p className="text-black text-xl">100 AI messages</p>
+                                            <p className="text-black text-xl">Export to CSV</p>
                                         </div>
                                     </div>
                                 </motion.div>
@@ -112,12 +141,17 @@ export default function infoAboutUs(){
                                     transition={{ type: "spring", stiffness: 200, damping: 7 }}
                                     className="border-2 border-white rounded-xl p-6 flex flex-col flex-1 min-h-[600px] bg-black shadow-blue-800 hover:shadow-xl transition">
                                     <div className="text-left space-y-3">
-                                        <h1 className="inline-block w-full bg-gradient-to-r from-blue-500 via-cyan-500 to-cyan-400 text-transparent bg-clip-text text-2xl md:text-3xl font-bold">
-                                            Premium Plan
-                                        </h1>
-                                        <p className="text-4xl font-extrabold text-white mt-2">$49.99</p>
+                                        <div className="flex items-center gap-2">
+                                            <h1 className="inline-block w-full bg-gradient-to-r from-blue-500 via-cyan-500 to-cyan-400 text-transparent bg-clip-text text-2xl md:text-3xl font-bold">
+                                                Pro Plan
+                                            </h1>
+                                            <span className="px-2 py-1 bg-gradient-to-r from-blue-500 to-cyan-400 text-white text-xs rounded-full font-bold">
+                                                    POPULAR
+                                            </span>
+                                        </div>
+                                        <p className="text-4xl font-extrabold text-white mt-2">$79/mo</p>
                                         <p className="inline-block w-full bg-gradient-to-br from-gray-200 to-white text-transparent bg-clip-text text-xl pt-2">
-                                            Best for scraping other cities and finding businesses
+                                            Best for growing agencies and teams
                                         </p>
                                     </div>
 
@@ -131,9 +165,11 @@ export default function infoAboutUs(){
                                                 What's included:
                                             </p>
                                             <ul className="list-disc list-inside space-y-1 text-left">
-                                                <li className="inline-block w-full bg-gradient-to-br from-gray-200 to-white text-transparent bg-clip-text text-lg">150 businesses (with and without websites)</li>
-                                                <li className="inline-block w-full bg-gradient-to-br from-gray-200 to-white text-transparent bg-clip-text text-lg">50 website generations</li>
-                                                <li className="inline-block w-full bg-gradient-to-br from-gray-200 to-white text-transparent bg-clip-text text-lg">8000 tokens</li>
+                                                <li className="inline-block w-full bg-gradient-to-br from-gray-200 to-white text-transparent bg-clip-text text-lg">20 searches/month (1,200 businesses)</li>
+                                                <li className="inline-block w-full bg-gradient-to-br from-gray-200 to-white text-transparent bg-clip-text text-lg">100 website generations</li>
+                                                <li className="inline-block w-full bg-gradient-to-br from-gray-200 to-white text-transparent bg-clip-text text-lg">Unlimited AI messages</li>
+                                                <li className="inline-block w-full bg-gradient-to-br from-gray-200 to-white text-transparent bg-clip-text text-lg">Multi-state search</li>
+                                                <li className="inline-block w-full bg-gradient-to-br from-gray-200 to-white text-transparent bg-clip-text text-lg">Team collaboration (3 users)</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -146,36 +182,33 @@ export default function infoAboutUs(){
                                     className="border-2 border-black rounded-xl p-6 flex flex-col justify-between flex-1 min-h-[600px] bg-white shadow-lg shadow-black/20 hover:shadow-xl transition">
                                     <div className="text-left space-y-3">
                                         <h1 className="bg-gradient-to-r from-blue-600 via-cyan-400 to-cyan-500 text-transparent bg-clip-text text-2xl md:text-3xl font-bold">Enterprise Plan</h1>
-                                        <p className="mt-2 text-black text-4xl font-bold">$199.99</p>
+                                        <p className="mt-2 text-black text-4xl font-bold">$299/mo</p>
                                         <p className="text-black text-xl pt-2">
-                                            Best for scraping across the US and finding businesses
+                                            For established agencies at scale
                                         </p>
                                     </div>
 
                                     <div className="mt-6">
                                         <button className="border-2 border-black rounded-2xl px-8 py-3 mx-auto text-black font-semibold hover:bg-black hover:text-white transform hover:scale-105 transition">
-                                            Get Started
+                                            Contact Sales
                                         </button>
 
                                         <div className="text-left mt-7 space-y-1">
                                             <p className="text-black text-xl font-bold">What's included:</p>
-                                            <p className="text-black text-xl">500+ local businesses (with and without websites)</p>
-                                            <p className="text-black text-xl">50+ website generations</p>
-                                            <p className="text-black text-xl">10000+ tokens</p>
+                                            <p className="text-black text-xl">Unlimited searches</p>
+                                            <p className="text-black text-xl">Unlimited website generations</p>
+                                            <p className="text-black text-xl">Unlimited AI messages</p>
+                                            <p className="text-black text-xl">Dedicated account manager</p>
+                                            <p className="text-black text-xl">Custom integrations</p>
+                                            <p className="text-black text-xl">White-label option</p>
                                         </div>
                                     </div>
                                 </motion.div>
-
                             </div>
                         </div>
-
                     </div>
-
-
                 </div>
             </section>
         </main>
     )
-
-
 }
