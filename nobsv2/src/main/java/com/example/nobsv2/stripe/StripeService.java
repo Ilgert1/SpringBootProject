@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -35,12 +36,13 @@ public class StripeService {
     @Value("${frontend.url:http://localhost:3000}")
     private String frontendUrl;
 
-    public String createCheckoutSession(String username, SubscriptionPlan plan) throws StripeException{
-        CustomUser user = userRepository.findByUsername(username).orElseThrow(()-> new RuntimeException("User not found!"));
+    public String createCheckoutSession(String username, SubscriptionPlan plan) throws StripeException {
+        CustomUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         String priceId = getPriceIdForPlan(plan);
 
-        SessionCreateParams params = SessionCreateParams.builder()
+        SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                 .setSuccessUrl(frontendUrl + "/payment/success?session_id={CHECKOUT_SESSION_ID}")
                 .setCancelUrl(frontendUrl + "/payment/canceled")
@@ -50,18 +52,23 @@ public class StripeService {
                                 .setQuantity(1L)
                                 .build()
                 )
-                .setClientReferenceId(username)
-                .setCustomerEmail(username)
-                .build();
+                .setClientReferenceId(username);
 
+        // Only set email if username is a valid email
+        if (username.contains("@")) {
+            paramsBuilder.setCustomerEmail(username);
+        }
+        // Otherwise Stripe will ask for email during checkout
+
+        SessionCreateParams params = paramsBuilder.build();
         Session session = Session.create(params);
 
-        log.info("CREATED checkout session for user: {} - Plan: {}" , username, plan);
+        log.info("✅ Created checkout session for user: {} - Plan: {}", username, plan);
 
         return session.getUrl();
     }
 
-
+    @Transactional
     public void upgradeUserPlan(String username, SubscriptionPlan newPlan, String stripeCustomerId, String stripeSubscriptionId) {
         CustomUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -95,6 +102,40 @@ public class StripeService {
         };
     }
 
+    //handle subscription level access
+    @Transactional
+    public void incrementUsage(String username, ActionType actionType) {
+        CustomUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        switch (actionType){
+            case SEARCH -> {
+                user.setSearchesUsed(user.getSearchesUsed() + 1);
+                log.info("User {} search count: {}/{}" ,
+                        username,
+                        user.getSearchesUsed(),
+                        user.getSubscriptionPlan().getMonthlySearches()
+                );
+            }
+            case GENERATE_WEBSITE -> {
+                user.setWebsitesGenerated(user.getWebsitesGenerated() + 1);
+                log.info("User {} website generation count: {}/{}" ,
+                        username,
+                        user.getWebsitesGenerated(),
+                        user.getSubscriptionPlan().getMonthlyWebsiteGenerations()
+                );
+            }
+            case GENERATE_MESSAGE -> {
+                user.setMessagesGenerated(user.getMessagesGenerated() + 1);
+                log.info("📊 User {} message count: {}/{}",
+                        username,
+                        user.getMessagesGenerated(),
+                        user.getSubscriptionPlan().getMonthlyMessages());
+            }
+        }
+        userRepository.save(user);
+    }
+
     private String getPriceIdForPlan(SubscriptionPlan plan) {
         return switch (plan) {
             case FREE -> freePriceId;
@@ -103,6 +144,7 @@ public class StripeService {
             case ENTERPRISE -> enterprisePriceId;
         };
     }
+
 
     public enum ActionType {
         SEARCH, GENERATE_WEBSITE, GENERATE_MESSAGE

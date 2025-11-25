@@ -1,13 +1,14 @@
 package com.example.nobsv2.security;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Arrays;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+
+import com.example.nobsv2.stripe.SubscriptionPlan;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 @Table(name="custom_user")
@@ -26,6 +27,35 @@ public class CustomUser {
 
     @Column(name = "roles")
     private String roles;
+
+    //NEW subscription fields
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private SubscriptionPlan subscriptionPlan = SubscriptionPlan.FREE;
+
+    @Column(name = "stripe_customer_id")
+    private String stripeCustomerId;
+
+    @Column(name = "stripe_subscription_id")
+    private String stripeSubscriptionId;
+
+    @Column(name = "subscription_status")
+    private String subscriptionStatus = "active"; //active , canceled, past_due
+
+    //Usage tracking ----IMPORTANT----
+    @Column(name = "searches_used")
+    private int searchesUsed = 0;
+
+    @Column(name = "websites_generated")
+    private int websitesGenerated = 0;
+
+    @Column(name = "messages_generated")
+    private int messagesGenerated = 0;
+
+
+    @Column(name = "usage_reset_date")
+    private LocalDateTime usageResetDate;
 
     public CustomUser(String username, String password, String roles) {
         this.username = username;

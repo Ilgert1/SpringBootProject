@@ -5,6 +5,8 @@ import com.example.nobsv2.business.model.Business;
 import com.example.nobsv2.business.services.GooglePlacesCrawlerService;
 import com.example.nobsv2.business.services.ImportBusinessesService;
 import com.example.nobsv2.business.services.PythonCrawlerService;
+import com.example.nobsv2.stripe.StripeService;
+import com.example.nobsv2.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +25,28 @@ public class LeadSearchController {
     private final ImportBusinessesService importBusinessesService;
     //private final PythonCrawlerService pythonCrawlerService;  // Add this
     private final GooglePlacesCrawlerService googlePlacesCrawlerService;
+    private final UserService userService;
+    private final StripeService stripeService;
 
     @PostMapping("/search")
     public ResponseEntity<SearchResponse> searchLeads(@RequestBody SearchRequest request) {
         log.info("Received search request: city={}, state={}, radius={}, type={}",
                 request.getCity(), request.getState(), request.getRadius(), request.getBusinessType());
 
+
         try {
+            //GET CURRENT USER
+            String username = userService.getCurrentUsername();
+
+            if(!stripeService.canPerformAction(username, StripeService.ActionType.SEARCH)){
+                log.warn("User {} reached search limit", username);
+                SearchResponse limitResponse = new SearchResponse();
+                limitResponse.setSuccess(false);
+                limitResponse.setMessage("Search limit reached. Please upgrade your plan");
+                return ResponseEntity.status(403).body(limitResponse);
+            }
+
+
             // Validate
             if (request.getCity() == null || request.getCity().trim().isEmpty()) {
                 throw new IllegalArgumentException("City is required");
@@ -51,6 +68,11 @@ public class LeadSearchController {
             // Import to database (ADDED THIS)
             ImportBusinessesService.ImportResult result =
                     importBusinessesService.importBusinesses(crawledBusinesses);
+
+            //Increment usage counter(only after successful search)
+            stripeService.incrementUsage(username , StripeService.ActionType.SEARCH);
+            log.info("Incremented search count for user: {}" , username);
+
 
             // Count businesses without website (ADDED THIS)
             int noWebsite = (int) crawledBusinesses.stream()

@@ -3,6 +3,8 @@ package com.example.nobsv2.business.services;
 import com.example.nobsv2.ai.service.ClaudeApiService;
 import com.example.nobsv2.business.model.Business;
 import com.example.nobsv2.business.repository.BusinessRepository;
+import com.example.nobsv2.stripe.StripeService;
+import com.example.nobsv2.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,42 +18,71 @@ public class WebsiteGenerationService {
     private final ClaudeApiService claudeApiService;
     private final BusinessRepository businessRepository;
     private final UpdateBusinessService updateBusinessService;
+    private final UserService userService;
+    private final StripeService stripeService;
 
     @Transactional
     public WebsiteGenerationResult generateWebsite(Integer businessId) {
-        Business business = businessRepository.findById(businessId)
-                .orElseThrow(() -> new RuntimeException("Business not found"));
+        try {
+            // GET CURRENT USER
+            String username = userService.getCurrentUsername();
 
-        log.info("Generating website for business: {}", business.getName());
+            // CHECK SUBSCRIPTION LIMIT BEFORE GENERATING
+            if (!stripeService.canPerformAction(username, StripeService.ActionType.GENERATE_WEBSITE)) {
+                log.warn("⚠️ User {} reached website generation limit", username);
+                WebsiteGenerationResult limitResult = new WebsiteGenerationResult();
+                limitResult.setBusinessId(businessId);
+                limitResult.setSuccess(false);
+                limitResult.setErrorMessage("Website generation limit reached. Please upgrade your plan to continue.");
+                return limitResult;
+            }
 
-        String prompt = buildWebsitePrompt(business);
-        String systemPrompt = buildSystemPrompt();
+            Business business = businessRepository.findById(businessId)
+                    .orElseThrow(() -> new RuntimeException("Business not found"));
 
-        // Generate with Claude
-        String generatedCode = claudeApiService.generateContent(prompt, systemPrompt);
-        log.info("✅ Generated code length: {} characters", generatedCode.length());
+            log.info("Generating website for business: {}", business.getName());
 
-        // Extract the React component code
-        String cleanCode = extractCode(generatedCode);
-        log.info("✅ Cleaned code length: {} characters", cleanCode.length());
-        log.info("🔍 First 100 chars of clean code: {}", cleanCode.substring(0, Math.min(100, cleanCode.length())));
+            String prompt = buildWebsitePrompt(business);
+            String systemPrompt = buildSystemPrompt();
 
-        // Save the code to database
-        String previewUrl = "https://springbootproject-production-9187.up.railway.app/api/businesses/" + businessId + "/render";
+            // Generate with Claude
+            String generatedCode = claudeApiService.generateContent(prompt, systemPrompt);
+            log.info("✅ Generated code length: {} characters", generatedCode.length());
 
-        log.info("💾 About to save - businessId: {}, url: {}, codeLength: {}", businessId, previewUrl, cleanCode.length());
-        Business updated = updateBusinessService.markWebsiteGenerated(businessId, previewUrl, cleanCode);
-        log.info("✅ Saved! Generated code in DB: {}", updated.getGeneratedWebsiteCode() != null ? "YES" : "NO");
+            // Extract the React component code
+            String cleanCode = extractCode(generatedCode);
+            log.info("✅ Cleaned code length: {} characters", cleanCode.length());
+            log.info("🔍 First 100 chars of clean code: {}", cleanCode.substring(0, Math.min(100, cleanCode.length())));
 
-        WebsiteGenerationResult result = new WebsiteGenerationResult();
-        result.setBusinessId(businessId);
-        result.setBusinessName(business.getName());
-        result.setGeneratedCode(cleanCode);
-        result.setSuccess(true);
+            // Save the code to database
+            String previewUrl = "https://springbootproject-production-9187.up.railway.app/api/businesses/" + businessId + "/render";
 
-        log.info("Website generated successfully for: {}", business.getName());
+            log.info("💾 About to save - businessId: {}, url: {}, codeLength: {}", businessId, previewUrl, cleanCode.length());
+            Business updated = updateBusinessService.markWebsiteGenerated(businessId, previewUrl, cleanCode);
+            log.info("✅ Saved! Generated code in DB: {}", updated.getGeneratedWebsiteCode() != null ? "YES" : "NO");
 
-        return result;
+            // INCREMENT USAGE COUNTER (only after successful generation)
+            stripeService.incrementUsage(username, StripeService.ActionType.GENERATE_WEBSITE);
+            log.info("✅ Incremented website generation count for user: {}", username);
+
+            WebsiteGenerationResult result = new WebsiteGenerationResult();
+            result.setBusinessId(businessId);
+            result.setBusinessName(business.getName());
+            result.setGeneratedCode(cleanCode);
+            result.setSuccess(true);
+
+            log.info("Website generated successfully for: {}", business.getName());
+
+            return result;
+
+        } catch (Exception e) {
+            log.error("❌ Website generation failed", e);
+            WebsiteGenerationResult errorResult = new WebsiteGenerationResult();
+            errorResult.setBusinessId(businessId);
+            errorResult.setSuccess(false);
+            errorResult.setErrorMessage("Generation failed: " + e.getMessage());
+            return errorResult;
+        }
     }
 
     private String buildSystemPrompt() {

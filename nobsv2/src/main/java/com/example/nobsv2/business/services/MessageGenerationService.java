@@ -1,6 +1,8 @@
 package com.example.nobsv2.business.services;
 
 import com.example.nobsv2.ai.service.ClaudeApiService;
+import com.example.nobsv2.stripe.StripeService;
+import com.example.nobsv2.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,11 +16,22 @@ import java.io.OutputStream;
 public class MessageGenerationService {
 
     private final ClaudeApiService claudeApiService;
+    private final UserService userService;
+    private final StripeService stripeService;
 
     public String generateOutreachMessage(
             String businessName,
             String businessType,
             String address) {
+
+        // GET CURRENT USER
+        String username = userService.getCurrentUsername();
+
+        // CHECK SUBSCRIPTION LIMIT BEFORE GENERATING
+        if (!stripeService.canPerformAction(username, StripeService.ActionType.GENERATE_MESSAGE)) {
+            log.warn("⚠️ User {} reached message generation limit", username);
+            throw new RuntimeException("Message generation limit reached. Please upgrade your plan to continue.");
+        }
 
         log.info("Generating outreach message for: {}", businessName);
 
@@ -26,6 +39,10 @@ public class MessageGenerationService {
         String systemPrompt = buildSystemPrompt();
 
         String message = claudeApiService.generateContent(prompt, systemPrompt);
+
+        // INCREMENT USAGE COUNTER (only after successful generation)
+        stripeService.incrementUsage(username, StripeService.ActionType.GENERATE_MESSAGE);
+        log.info("✅ Incremented message generation count for user: {}", username);
 
         log.info("✅ Outreach message generated for: {}", businessName);
 
