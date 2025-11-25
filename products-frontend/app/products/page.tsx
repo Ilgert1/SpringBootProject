@@ -8,6 +8,8 @@ import { api } from "@/app/lib/api";
 import LeadsList from "@/app/products/components/LeadsList";
 import LeadSearchForm from "@/app/products/components/LeadSearchForm";
 import GroupedLeadsView from "@/app/products/components/GroupedLeadsView";
+import UpgradeModal from "@/app/products/components/UpgradeModal";
+
 
 export default function ProductsPage() {
     const router = useRouter();
@@ -23,6 +25,11 @@ export default function ProductsPage() {
     const [leads, setLeads] = useState<business[] | null>(null);
     const [searching, setSearching] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    //new state for upgrade modal
+    const [upgradeModal, setUpgradeModal] = useState<{
+        isOpen: boolean;
+        limitType: 'search' | 'website' | 'message';
+    }>({ isOpen: false, limitType: 'search' });
 
     const leadsNoWeb = leads?.filter(b =>
         !b.website || b.website.trim() === "" || b.website.toUpperCase() === "NO WEBSITE"
@@ -65,7 +72,6 @@ export default function ProductsPage() {
                 }else {
                     const list = await api<business[]>("/api/businesses");
                     setLeads(list);
-
                     // Show success message
                     alert(`Found ${response.totalFound} businesses! ${response.businessesWithoutWebsite} without websites.`);
                 }
@@ -75,13 +81,19 @@ export default function ProductsPage() {
 
         } catch (e: any) {
             console.error('Search error:', e);
-            console.error('Error message:', e.message);
-            console.error('Error string:', String(e));
-            if (String(e.message).includes("401") || String(e.message).includes("403")) {
+
+            const errorMessage = e?.message ?? "Failed to search for leads";
+
+            // Check if it's a limit error
+            if (errorMessage.includes("limit reached") || errorMessage.includes("upgrade")) {
+                // Show upgrade prompt
+                setUpgradeModal({isOpen: true, limitType: 'search'});
+            } else if (errorMessage.includes("401") || errorMessage.includes("403")) {
                 router.replace("/login");
-                return;
+            } else {
+                setError(errorMessage);
+                alert(`Error: ${errorMessage}`);
             }
-            setError(e?.message ?? "Failed to search for leads");
         } finally {
             setSearching(false);
         }
@@ -188,6 +200,12 @@ export default function ProductsPage() {
                     </div>
                 )}
             </div>
+            {/*UPGRADE MODAL*/}
+            <UpgradeModal
+                isOpen={upgradeModal.isOpen}
+                onClose={() => setUpgradeModal({ ...upgradeModal, isOpen: false })}
+                limitType={upgradeModal.limitType}
+            />
         </main>
     );
 }

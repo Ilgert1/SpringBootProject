@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { api } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import { Toaster , toast} from "react-hot-toast";
+import UpgradeModal from "@/app/products/components/UpgradeModal";
 
 type LeadsListProps = {
     title: string;
@@ -109,6 +110,9 @@ export default function LeadsList({ title, data }: LeadsListProps) {
     const [generatedCode, setGeneratedCode] = useState<Record<number, string>>({});
     const [progress, setProgress] = useState(0);
 
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+
     // Simulate progress during generation
     useEffect(() => {
         if (generating) {
@@ -156,14 +160,19 @@ export default function LeadsList({ title, data }: LeadsListProps) {
 
         } catch (e: any) {
             const errorMsg = e.message || 'Failed to generate website';
-            setError(errorMsg);
-            toast('Error: ' + errorMsg);
+            if(errorMsg.includes("Website generation limit reached") || errorMsg.includes("upgrade")){
+                setShowUpgradeModal(true);
+             }else{
+                setError(errorMsg);
+                toast('Error: ' + errorMsg);
+            }
         } finally {
             setGenerating(null);
         }
     }
 
     return (
+        <>
         <section className="mt-6 space-y-4">
             <h2 className="text-lg font-semibold">{title}</h2>
 
@@ -293,5 +302,13 @@ export default function LeadsList({ title, data }: LeadsListProps) {
                 ))}
             </div>
         </section>
+
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+                limitType="website"
+            />
+
+        </>
     );
 }

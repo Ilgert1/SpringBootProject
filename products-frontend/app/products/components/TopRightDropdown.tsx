@@ -19,6 +19,7 @@ export default function TopRightDropdown() {
     //------
     function handleLogout(){
         localStorage.removeItem("jwt");
+        localStorage.removeItem("access_token");//access_token removal to restart the whole process
         router.push("/login")
     }
 

@@ -1,11 +1,64 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, {useState} from "react";
 import { motion , Variants} from "framer-motion"
-
+import {useRouter} from "next/navigation";
+import {toast} from "react-hot-toast";
+import {api} from "@/app/lib/api";
 
 export default function infoAboutUs(){
+
+    const router = useRouter();
+    const[loading , setLoading] = useState<string | null>(null);
+
+    async function handleSubscribe(plan: 'FREE' | 'BASIC' | 'PRO' | 'ENTERPRISE') {
+        try {
+            setLoading(plan);
+
+            // Check if user is logged in
+            const token = localStorage.getItem('access_token');
+
+            console.log('🔍 Token check:', token ? 'Found' : 'Not found'); // Debug log
+
+            if (!token) {
+                const message = plan === 'FREE'
+                    ? 'Create a free account to get started!'
+                    : 'Please log in or create an account to subscribe';
+
+                alert(message); // Simple alert first
+
+                localStorage.setItem('pending_subscription', plan);
+                router.push('/login');
+                return;
+            }
+
+            // For free tier
+            if (plan === 'FREE') {
+                alert('Free tier activated! Redirecting to dashboard...');
+                router.push('/leads');
+                return;
+            }
+
+            // For paid plans
+            const response = await api<{ checkoutUrl: string }>('/api/stripe/create-checkout-session', {
+                method: 'POST',
+                body: JSON.stringify({ plan })
+            });
+
+            if (response.checkoutUrl) {
+                window.location.href = response.checkoutUrl;
+            } else {
+                throw new Error('Failed to create checkout session');
+            }
+
+        } catch (error: any) {
+            console.error('❌ Subscription error:', error);
+            alert(error.message || 'Failed to start subscription. Please try again.');
+        } finally {
+            setLoading(null);
+        }
+    }
     const fadeUp: Variants = {
         hidden: { opacity: 0, y: 18 },
         show: {
@@ -91,7 +144,9 @@ export default function infoAboutUs(){
                                         </p>
                                     </div>
                                     <div className="mt-6">
-                                        <button className="border-2 border-black rounded-2xl px-8 py-3 mx-auto text-black font-semibold hover:bg-black hover:text-white transform hover:scale-105 transition">
+                                        <button
+                                            className="border-2 text-black border-black rounded-2xl px-8 py-3 mx-auto font-semibold transform hover:scale-105 transition hover:bg-black hover:text-white"
+                                            onClick={() => handleSubscribe('FREE')}>
                                             Start Free Trial
                                         </button>
 
@@ -121,8 +176,15 @@ export default function infoAboutUs(){
                                     </div>
 
                                     <div className="mt-6">
-                                        <button className="border-2 border-black rounded-2xl px-8 py-3 mx-auto text-black font-semibold hover:bg-black hover:text-white transform hover:scale-105 transition">
-                                            Get Started
+                                        <button
+                                            onClick={() => handleSubscribe('BASIC')}
+                                            disabled={loading === 'BASIC'}
+                                            className={`border-2 border-black rounded-2xl px-8 py-3 mx-auto font-semibold transform hover:scale-105 transition ${
+                                                loading === 'BASIC'
+                                                    ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                                                    : 'text-black hover:bg-black hover:text-white'
+                                            }`}>
+                                            {loading === 'BASIC' ? 'Loading...' : 'Get Started'}
                                         </button>
 
                                         <div className="text-left mt-6 space-y-1">
@@ -156,8 +218,15 @@ export default function infoAboutUs(){
                                     </div>
 
                                     <div className="mt-6">
-                                        <button className="border-2 border-white rounded-2xl mt-7 mb-17 px-8 py-3 mx-auto text-white font-semibold hover:bg-white hover:text-black transform hover:scale-105 transition">
-                                            Get Started
+                                        <button
+                                            onClick={() => handleSubscribe('PRO')}
+                                            disabled={loading === 'PRO'}
+                                            className={`border-2 text-white border-white rounded-2xl px-8 py-3 mx-auto font-semibold transform hover:scale-105 transition ${
+                                                loading === 'PRO'
+                                                    ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                                                    : 'text-black hover:bg-black hover:text-white'
+                                            }`}>
+                                            {loading === 'PRO' ? 'Loading...' : 'Get Started'}
                                         </button>
 
                                         <div className="text-left mt-7 space-y-1">
@@ -189,8 +258,15 @@ export default function infoAboutUs(){
                                     </div>
 
                                     <div className="mt-6">
-                                        <button className="border-2 border-black rounded-2xl px-8 py-3 mx-auto text-black font-semibold hover:bg-black hover:text-white transform hover:scale-105 transition">
-                                            Contact Sales
+                                        <button
+                                            onClick={() => handleSubscribe('ENTERPRISE')}
+                                            disabled={loading === 'ENTERPRISE'}
+                                            className={`border-2 border-black rounded-2xl px-8 py-3 mx-auto font-semibold transform hover:scale-105 transition ${
+                                                     loading === 'ENTERPRISE'
+                                                         ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                                                         : 'text-black hover:bg-black hover:text-white'
+                                                 }`}>
+                                            {loading === 'ENTERPRISE' ? 'Loading...' : 'Get Started'}
                                         </button>
 
                                         <div className="text-left mt-7 space-y-1">

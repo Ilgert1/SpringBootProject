@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import type { business } from "@/app/types/business";
 import {toast} from "react-hot-toast";
+import UpgradeModal from "@/app/products/components/UpgradeModal";
 
 interface ContactBusinessModalProps {
     businessId: number;
@@ -15,6 +16,8 @@ export default function ContactBusinessModal({ businessId, onClose }: ContactBus
     const [generatedMessage, setGeneratedMessage] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
     const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://springbootproject-production-9187.up.railway.app";
 
@@ -78,10 +81,15 @@ export default function ContactBusinessModal({ businessId, onClose }: ContactBus
                 }
             }, 20);
 
-        } catch (err) {
-            toast('Error generating message: ' + err);
+        } catch (e: any) {
+            const errorMsg= e.messsage || 'Failed to generate message';
+            if(errorMsg.includes("Message generation limit reached") || errorMsg.includes("upgrade")){
+               setShowUpgradeModal(true);
+            }else{
+            toast('Error generating message: ' + e);
             setGeneratedMessage("Hi! I came across your business...");
             setIsGenerating(false);
+            }
         }
     };
 
@@ -108,6 +116,7 @@ export default function ContactBusinessModal({ businessId, onClose }: ContactBus
     if (!businessDetails) return null;
 
     return (
+        <>
         <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             onClick={onClose}
@@ -188,5 +197,11 @@ export default function ContactBusinessModal({ businessId, onClose }: ContactBus
                 </div>
             </div>
         </div>
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+                limitType="message"
+            />
+        </>
     );
 }

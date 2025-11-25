@@ -254,15 +254,6 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
         else newSet.add(date);
         setExpandedAllDates(newSet);
     }
-    //just for testing remove later
-    console.log(' Debug - First 3 leads created_at:',
-        filteredHotLeads.slice(0, 3).map(b => ({
-            name: b.name,
-            created_at: b.createdAt,
-            status: b.businessStatus,
-            parsed: new Date(b.createdAt || '').toLocaleDateString()
-        }))
-    );
 
     if (leads.length === 0) {
         return (

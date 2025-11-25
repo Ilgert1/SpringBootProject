@@ -21,7 +21,15 @@ export default function LoginPage() {
         try {
             setLoading(true);
             await login(username.trim(), password);
+
+            //check if theyre trying to subscribe
+            const pendingPlan = localStorage.getItem('pending_subscription');
+            if(pendingPlan){
+                localStorage.removeItem('pending_subscription')
+                router.replace('/info')
+            }else{
             router.replace("/products");
+            }
         } catch (e: any) {
             setError(e?.message ?? "Login failed");
         } finally {
