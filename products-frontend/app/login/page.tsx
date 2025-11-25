@@ -31,6 +31,7 @@ export default function LoginPage() {
             router.replace("/products");
             }
         } catch (e: any) {
+            console.log("ERROR HERE");
             setError(e?.message ?? "Login failed");
         } finally {
             setLoading(false);
