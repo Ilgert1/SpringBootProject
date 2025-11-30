@@ -174,10 +174,16 @@ export default function PlatformPage() {
                             color: "from-purple-50 to-pink-50",
                             icon: "2"
                         }, {
+                            title: "Customize the websites",
+                            desc:"Use AI to customize the website template.",
+                            color: "from-orange-50 to coral-50",
+                            icon: "3"
+                        },
+                            {
                             title: "You Deliver Value",
                             desc: "Present a ready-made website and close deals instantly.",
                             color: "from-green-50 to-emerald-50",
-                            icon: "3"
+                            icon: "4"
                         }].map((s, i) => (
                             <motion.div
                                 key={i}

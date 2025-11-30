@@ -9,6 +9,7 @@ import UpgradeModal from "@/app/products/components/UpgradeModal";
 type LeadsListProps = {
     title: string;
     data: business[];
+    onActionComplete?: () => void;
 };
 type StrengthLevel = "weak" | "fair" | "good" | "strong";
 
@@ -103,7 +104,7 @@ function StrengthBar({ level, score }: { level: StrengthLevel; score: number }) 
 }
 
 
-export default function LeadsList({ title, data }: LeadsListProps) {
+export default function LeadsList({ title, data , onActionComplete}: LeadsListProps) {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
     const [generating, setGenerating] = useState<number | null>(null);
@@ -154,6 +155,8 @@ export default function LeadsList({ title, data }: LeadsListProps) {
                 setTimeout(() => {
                     toast('Website generated successfully!');
                 }, 300);
+
+                onActionComplete?.();
             } else {
                 throw new Error(result.errorMessage || 'Generation failed');
             }

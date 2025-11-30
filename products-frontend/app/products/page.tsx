@@ -9,11 +9,14 @@ import LeadsList from "@/app/products/components/LeadsList";
 import LeadSearchForm from "@/app/products/components/LeadSearchForm";
 import GroupedLeadsView from "@/app/products/components/GroupedLeadsView";
 import UpgradeModal from "@/app/products/components/UpgradeModal";
+import SubscriptionBadge from "@/app/products/components/SubcriptionBadge";
 
 
 export default function ProductsPage() {
     const router = useRouter();
     const [user, setUser] = useState<{ username: string; roles: string[] } | null>(null);
+
+    const [badgeRefresh , setBadgeRefresh] = useState(0);
 
     useEffect(() => {
         getCurrentUser().then((me) => {
@@ -75,6 +78,8 @@ export default function ProductsPage() {
                     // Show success message
                     alert(`Found ${response.totalFound} businesses! ${response.businessesWithoutWebsite} without websites.`);
                 }
+
+                setBadgeRefresh(prev => prev + 1);
             } else {
                 throw new Error(response.message);
             }
@@ -134,6 +139,10 @@ export default function ProductsPage() {
                     <h1 className="text-3xl font-semibold text-gray-900 mb-2">Lead Generator</h1>
                     <p className="text-gray-600">Find local businesses that need your help</p>
                 </div>
+                {/*Subscription badge*/}
+                <div className="mb-6">
+                    <SubscriptionBadge refreshTrigger={badgeRefresh}/>
+                </div>
 
                 {/* Search Form */}
                 <LeadSearchForm onSearch={handleSearch} searching={searching} />
@@ -169,7 +178,11 @@ export default function ProductsPage() {
 
                 {/* Leads Lists */}
                 {leads && leads.length > 0 && (
-                    <GroupedLeadsView leads={leads} />
+                    <GroupedLeadsView
+                        leads={leads}
+                        onActionComplete={() => setBadgeRefresh(prev => prev+1)}
+
+                    />
                 )}
 
 

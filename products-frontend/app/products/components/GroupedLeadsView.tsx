@@ -5,6 +5,7 @@ import LeadsList from "./LeadsList";
 
 type GroupedLeadsViewProps = {
     leads: business[];
+    onActionComplete?: () => void;
 };
 
 // Format date nicely
@@ -172,7 +173,7 @@ function groupByRelativeDate(leads: business[]): Record<string, business[]> {
     return grouped;
 }
 
-export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
+export default function GroupedLeadsView({ leads , onActionComplete}: GroupedLeadsViewProps) {
     const [showHotLeads, setShowHotLeads] = useState(false);
     const [showAllBusinesses, setShowAllBusinesses] = useState(false);
     const [expandedHotDates, setExpandedHotDates] = useState<Set<string>>(new Set());
@@ -366,7 +367,10 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
 
                                         {isExpanded && (
                                             <div className="px-6 py-3 bg-gray-50">
-                                                <LeadsList title="" data={dateLeads} />
+                                                <LeadsList title=""
+                                                           data={dateLeads}
+                                                            onActionComplete={onActionComplete}
+                                                />
                                             </div>
                                         )}
                                     </div>
@@ -440,7 +444,10 @@ export default function GroupedLeadsView({ leads }: GroupedLeadsViewProps) {
 
                                     {isExpanded && (
                                         <div className="px-6 py-3 bg-gray-50">
-                                            <LeadsList title="" data={dateLeads} />
+                                            <LeadsList title=""
+                                                       data={dateLeads}
+                                                        onActionComplete={onActionComplete}
+                                            />
                                         </div>
                                     )}
                                 </div>

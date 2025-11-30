@@ -1,4 +1,18 @@
-export type Me = {username: string; roles: string[]};
+export type Me = {
+    username: string;
+    roles: string[];
+    subscriptionPlan: 'FREE' | 'BASIC' | 'PRO' | 'ENTERPRISE';
+    subscriptionStatus: string;
+    searchesUsed: number;
+    websitesGenerated: number;
+    messagesGenerated: number;
+    searchesRemaining: number;
+    websitesRemaining: number;
+    messagesRemaining: number;
+    monthlySearches: number;
+    monthlyWebsites: number;
+    monthlyMessages: number;
+};
 
 export async function login(username: string, password: string) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
