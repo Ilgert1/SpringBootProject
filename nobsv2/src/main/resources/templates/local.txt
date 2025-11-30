@@ -1,0 +1,206 @@
+import React from "react";
+import { Phone, MapPin, Star, Mail, Layers, Activity, Grid, Users, Facebook, Instagram, Twitter } from "lucide-react";
+import { motion } from "framer-motion";
+
+const businessName = "SunnySide Café";
+const businessType = "Local Café & Bakery";
+const address = "45 Main Street, Portland, OR 97205";
+const phone = "(503) 555-0173";
+const rating = 4.7;
+const totalRatings = 128;
+const inferredServices = [
+"Gourmet Coffee & Espresso",
+"Freshly Baked Pastries",
+"Breakfast & Brunch Menu",
+"Lunch Specials",
+"Local Artisan Sandwiches",
+"Seasonal Desserts",
+"Catering Services",
+"Community Events",
+"Gift Cards & Merchandise",
+];
+
+const sectionFade = {
+hidden: { opacity: 0, y: 18 },
+show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
+const floatIn = {
+hidden: { opacity: 0, y: 8, scale: 0.98 },
+show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7 } },
+};
+
+export default function LocalTemplate() {
+return (
+<div className="min-h-screen bg-orange-50 text-slate-900 antialiased">
+{/* Header */}
+<header className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+<div className="font-bold text-xl">{businessName}</div>
+<nav className="hidden md:flex items-center gap-6 text-slate-700">
+<a href="#services" className="hover:text-slate-900 transition">Menu</a>
+<a href="#why" className="hover:text-slate-900 transition">Why Us</a>
+<a href="#contact" className="hover:text-slate-900 transition">Contact</a>
+</nav>
+</header>
+
+  <main>
+    {/* HERO CENTER */}
+    <motion.section initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="px-6 py-24 text-center bg-gradient-to-br from-orange-200 via-yellow-100 to-orange-50 rounded-b-3xl">
+      <motion.h1 variants={floatIn} className="font-serif font-extrabold text-5xl md:text-6xl leading-tight">
+        Welcome to {businessName}
+      </motion.h1>
+      <motion.p variants={floatIn} className="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
+        Enjoy warm, freshly baked treats and locally sourced coffee in a cozy, community-focused atmosphere.
+      </motion.p>
+      <motion.div variants={floatIn} className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-orange-500 text-white font-semibold shadow hover:scale-105 transition">
+          <Phone size={16} /> Call Us
+        </a>
+        <a href="#services" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-orange-300 hover:bg-orange-100 transition">
+          Learn More
+        </a>
+      </motion.div>
+    </motion.section>
+
+    {/* SOCIAL PROOF */}
+    <motion.section initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="max-w-7xl mx-auto px-6 py-16">
+      <div className="text-center mb-10">
+        <h2 className="font-serif text-3xl md:text-4xl font-bold">Customer Favorites</h2>
+        <div className="flex justify-center items-center gap-2 mt-2 text-yellow-500">
+          {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={20} />)}
+          <span className="text-slate-700 font-semibold ml-2">{rating} stars ({totalRatings} reviews)</span>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          "The coffee here is the best in town, and the pastries are always fresh!",
+          "Cozy atmosphere, perfect for brunch with friends or work sessions.",
+          "Friendly staff and amazing seasonal desserts, highly recommend!"
+        ].map((testimonial, idx) => (
+          <motion.div key={idx} variants={floatIn} className="bg-white p-6 rounded-2xl shadow-md border text-slate-800">
+            <p>"{testimonial}"</p>
+          </motion.div>
+        ))}
+      </div>
+    </motion.section>
+
+    {/* SERVICES */}
+    <motion.section id="services" initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="max-w-7xl mx-auto px-6 py-16">
+      <div className="text-center mb-10">
+        <h2 className="font-serif text-3xl md:text-4xl font-bold">Our Offerings</h2>
+        <p className="mt-2 text-slate-600">Delicious food and drinks made with love.</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {inferredServices.slice(0, 9).map((service, idx) => {
+          const icons = [Layers, Activity, Grid, Users, Layers, Activity, Grid, Users, Layers];
+          const descriptions = [
+            "Start your morning with our gourmet coffee & espresso.",
+            "Indulge in freshly baked pastries daily.",
+            "Breakfast & brunch specials to brighten your day.",
+            "Delicious and affordable lunch options.",
+            "Sandwiches made with local artisan ingredients.",
+            "Seasonal desserts that capture local flavors.",
+            "Catering services for your events.",
+            "Join our community events and gatherings.",
+            "Gift cards and merchandise for loved ones.",
+          ];
+          const Icon = icons[idx % icons.length];
+          return (
+            <motion.div key={idx} variants={floatIn} whileHover={{ y: -2 }} className="bg-white rounded-2xl p-6 shadow-md border transition-transform">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-orange-500 text-white flex items-center justify-center shadow">
+                  <Icon size={20} />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-slate-900">{service}</h4>
+                  <p className="mt-2 text-sm text-slate-600">{descriptions[idx]}</p>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.section>
+
+    {/* WHY CHOOSE US */}
+    <motion.section id="why" initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="py-16 bg-orange-100">
+      <div className="max-w-7xl mx-auto px-6 text-center mb-10">
+        <h2 className="font-serif text-3xl md:text-4xl font-bold">Why Choose SunnySide Café?</h2>
+        <p className="mt-2 text-slate-700 max-w-2xl mx-auto">Locally loved, community-focused, and serving quality treats every day.</p>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { icon: Layers, title: "Community First", desc: "We support local farmers and artisans." },
+          { icon: Activity, title: "Fresh Ingredients", desc: "Everything is made fresh daily for best quality." },
+          { icon: Users, title: "Friendly Service", desc: "Our staff treats every guest like family." },
+        ].map((item, i) => (
+          <motion.div key={i} variants={floatIn} whileHover={{ y: -2 }} className="bg-white p-6 rounded-2xl shadow-md border">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-md bg-orange-500 text-white flex items-center justify-center">
+                <item.icon size={18} />
+              </div>
+              <div>
+                <h4 className="font-semibold text-slate-900">{item.title}</h4>
+                <p className="text-sm text-slate-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.section>
+
+    {/* CALL TO ACTION */}
+    <motion.section id="contact" initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="py-16 bg-orange-500 text-white">
+      <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h3 className="font-serif text-3xl font-bold">Visit or Call Us Today</h3>
+          <p className="mt-2 max-w-md">Come enjoy freshly brewed coffee and baked goods in a warm, welcoming environment.</p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4">
+         <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white text-white hover:bg-white hover:text-slate-900 transition">
+             <Mail size={16} /> Contact Us
+         </a>
+        </div>
+      </div>
+    </motion.section>
+  </main>
+
+  {/* FOOTER */}
+  <footer className="bg-orange-100 text-slate-700 mt-12">
+    <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <div className="font-serif font-bold text-lg">{businessName}</div>
+        <p className="mt-2 text-sm text-slate-700">{businessType}</p>
+        <p className="mt-4 text-sm text-slate-700">© {new Date().getFullYear()} {businessName}. All rights reserved.</p>
+        <div className="mt-4 flex items-center gap-3">
+          <a aria-label="Facebook" className="p-2 rounded-md bg-orange-200 hover:bg-orange-300 transition"><Facebook size={18} /></a>
+          <a aria-label="Instagram" className="p-2 rounded-md bg-orange-200 hover:bg-orange-300 transition"><Instagram size={18} /></a>
+          <a aria-label="Twitter" className="p-2 rounded-md bg-orange-200 hover:bg-orange-300 transition"><Twitter size={18} /></a>
+        </div>
+      </div>
+
+      <div>
+        <h4 className="font-semibold mb-3">Contact</h4>
+        <ul className="space-y-2 text-sm">
+          <li className="flex items-center gap-2"><Phone size={14} /> {phone}</li>
+          <li className="flex items-center gap-2"><Mail size={14} /> hello@sunnysidecafe.example</li>
+          <li className="flex items-center gap-2"><MapPin size={14} /> {address}</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 className="font-semibold mb-3">Quick Links</h4>
+        <ul className="space-y-2 text-sm">
+          <li><a href="#services" className="hover:underline">Menu</a></li>
+          <li><a href="#why" className="hover:underline">Why Us</a></li>
+          <li><a href="#contact" className="hover:underline">Contact</a></li>
+          <li><a className="hover:underline">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+);
+}

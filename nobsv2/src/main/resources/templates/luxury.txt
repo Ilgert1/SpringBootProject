@@ -1,0 +1,186 @@
+import React from "react";
+import { Phone, MapPin, Star, Mail, Layers, Activity, Grid, Users, Facebook, Instagram, Twitter } from "lucide-react";
+import { motion } from "framer-motion";
+
+const businessName = "Elysian Estates";
+const businessType = "Luxury Real Estate";
+const address = "1 Prestige Avenue, Beverly Hills, CA 90210";
+const phone = "(310) 555-0198";
+const rating = 4.95;
+const totalRatings = 88;
+const inferredServices = [
+"Premium Property Listings",
+"Exclusive Buyer Representation",
+"High-End Marketing Solutions",
+"Luxury Home Staging",
+"Investment Consulting",
+"Personalized Property Tours",
+"Concierge Services",
+"Market Analysis & Insights",
+"VIP Client Events",
+];
+
+const sectionFade = {
+hidden: { opacity: 0, y: 18 },
+show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
+const floatIn = {
+hidden: { opacity: 0, y: 8, scale: 0.98 },
+show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7 } },
+};
+
+export default function LuxuryTemplate() {
+return (
+<div className="min-h-screen bg-black text-white antialiased">
+{/* Header */}
+<header className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+<div className="font-serif font-bold text-xl">{businessName}</div>
+<nav className="hidden md:flex items-center gap-6 text-white/80">
+<a href="#services" className="hover:text-white transition">Services</a>
+<a href="#why" className="hover:text-white transition">Why Us</a>
+<a href="#contact" className="hover:text-white transition">Contact</a>
+</nav>
+</header>
+
+  <main>
+    {/* HERO FULL-SCREEN */}
+    <motion.section initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="relative flex flex-col items-center justify-center h-screen px-6 text-center bg-gradient-to-br from-black via-gray-900 to-gray-800 overflow-hidden">
+      <motion.h1 variants={floatIn} className="font-serif font-extrabold text-6xl md:text-7xl leading-tight max-w-4xl">
+        Discover Your Dream Luxury Estate
+      </motion.h1>
+      <motion.p variants={floatIn} className="mt-4 text-lg text-white/80 max-w-2xl">
+        Elysian Estates offers unparalleled access to the finest properties with a bespoke, white-glove experience for discerning clients.
+      </motion.p>
+      <motion.div variants={floatIn} className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#contact" className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-semibold shadow-lg hover:scale-105 transition">
+          <Phone size={16} /> Contact Us
+        </a>
+        <a href="#services" className="inline-flex items-center gap-2 px-8 py-3 rounded-full border border-white text-white hover:bg-white hover:text-black transition">
+          Learn More
+        </a>
+      </motion.div>
+      <motion.div variants={floatIn} className="absolute top-0 left-0 w-72 h-72 rounded-full bg-yellow-500 opacity-20 blur-3xl animate-[float_6s_infinite]" />
+      <motion.div variants={floatIn} className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-yellow-600 opacity-20 blur-3xl animate-[float_8s_infinite]" />
+    </motion.section>
+
+    {/* SERVICES */}
+    <motion.section id="services" initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="max-w-7xl mx-auto px-6 py-16">
+      <div className="text-center mb-10">
+        <h2 className="font-serif text-3xl md:text-4xl font-bold">Our Exclusive Services</h2>
+        <p className="mt-2 text-white/70">Tailored offerings for clients seeking luxury and exclusivity.</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {inferredServices.slice(0, 9).map((service, idx) => {
+          const icons = [Layers, Activity, Grid, Users, Layers, Activity, Grid, Users, Layers];
+          const descriptions = [
+            "Curated listings of the most exquisite estates.",
+            "Dedicated representation for buyers and sellers.",
+            "High-end marketing that attracts the right clientele.",
+            "Professional staging to highlight property elegance.",
+            "Expert consulting for real estate investments.",
+            "Personalized tours tailored to your lifestyle.",
+            "Luxury concierge services for seamless transactions.",
+            "Comprehensive market insights for informed decisions.",
+            "Exclusive VIP events and showcases.",
+          ];
+          const Icon = icons[idx % icons.length];
+          return (
+            <motion.div key={idx} variants={floatIn} whileHover={{ y: -4 }} className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-lg border border-white/20 transition-transform">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 text-black flex items-center justify-center shadow">
+                  <Icon size={20} />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-white">{service}</h4>
+                  <p className="mt-2 text-sm text-white/70">{descriptions[idx]}</p>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.section>
+
+    {/* WHY CHOOSE US */}
+    <motion.section id="why" initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="py-16 bg-black/70">
+      <div className="max-w-7xl mx-auto px-6 text-center mb-10">
+        <h2 className="font-serif text-3xl md:text-4xl font-bold">Why Elysian Estates</h2>
+        <p className="mt-2 text-white/70 max-w-2xl mx-auto">Our commitment to excellence ensures a seamless and luxurious real estate experience.</p>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { icon: Layers, title: "Exclusive Properties", desc: "Access to the most prestigious estates worldwide." },
+          { icon: Activity, title: "Tailored Service", desc: "Bespoke solutions for every client’s unique needs." },
+          { icon: Users, title: "Trusted Expertise", desc: "Decades of experience in luxury real estate." },
+        ].map((item, i) => (
+          <motion.div key={i} variants={floatIn} whileHover={{ y: -4 }} className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg border border-white/20">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-md bg-gradient-to-r from-yellow-500 to-yellow-600 text-black flex items-center justify-center">
+                <item.icon size={18} />
+              </div>
+              <div>
+                <h4 className="font-semibold text-white">{item.title}</h4>
+                <p className="text-sm text-white/70 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.section>
+
+    {/* CALL TO ACTION */}
+    <motion.section id="contact" initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="py-16 bg-yellow-600 text-black">
+      <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h3 className="font-serif text-3xl font-bold">Schedule Your Exclusive Consultation</h3>
+          <p className="mt-2 max-w-md">Experience personalized luxury service and discover your dream property with Elysian Estates.</p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4">
+         <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white text-white hover:bg-white hover:text-slate-900 transition">
+             <Mail size={16} /> Contact Us
+         </a>
+        </div>
+      </div>
+    </motion.section>
+  </main>
+
+  {/* FOOTER */}
+  <footer className="bg-black text-white/80 mt-12">
+    <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <div className="font-serif font-bold text-lg">{businessName}</div>
+        <p className="mt-2 text-sm">{businessType}</p>
+        <p className="mt-4 text-sm">© {new Date().getFullYear()} {businessName}. All rights reserved.</p>
+        <div className="mt-4 flex items-center gap-3">
+          <a aria-label="Facebook" className="p-2 rounded-md bg-white/10 hover:bg-white/20 transition"><Facebook size={18} /></a>
+          <a aria-label="Instagram" className="p-2 rounded-md bg-white/10 hover:bg-white/20 transition"><Instagram size={18} /></a>
+          <a aria-label="Twitter" className="p-2 rounded-md bg-white/10 hover:bg-white/20 transition"><Twitter size={18} /></a>
+        </div>
+      </div>
+
+      <div>
+        <h4 className="font-semibold mb-3">Contact</h4>
+        <ul className="space-y-2 text-sm">
+          <li className="flex items-center gap-2"><Phone size={14} /> {phone}</li>
+          <li className="flex items-center gap-2"><Mail size={14} /> info@elysian.example</li>
+          <li className="flex items-center gap-2"><MapPin size={14} /> {address}</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 className="font-semibold mb-3">Quick Links</h4>
+        <ul className="space-y-2 text-sm">
+          <li><a href="#services" className="hover:underline">Services</a></li>
+          <li><a href="#why" className="hover:underline">Why Us</a></li>
+          <li><a href="#contact" className="hover:underline">Contact</a></li>
+          <li><a className="hover:underline">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+);
+}

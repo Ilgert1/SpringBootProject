@@ -1,0 +1,189 @@
+import React from "react";
+import { Phone, MapPin, Star, Mail, Layers, Activity, Grid, Users, Facebook, Instagram, Twitter } from "lucide-react";
+import { motion } from "framer-motion";
+
+const businessName = "LawBridge Advisors";
+const businessType = "Corporate Law Firm";
+const address = "123 Justice Avenue, New York, NY 10001";
+const phone = "(212) 555-0199";
+const rating = 4.9;
+const totalRatings = 142;
+const inferredServices = [
+"Corporate Law Consultation",
+"Mergers & Acquisitions",
+"Intellectual Property Protection",
+"Contract Drafting & Review",
+"Compliance & Risk Management",
+"Litigation Support",
+"Employment Law",
+"Regulatory Advisory",
+"Business Structuring",
+];
+
+const sectionFade = {
+hidden: { opacity: 0, y: 18 },
+show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
+const floatIn = {
+hidden: { opacity: 0, y: 8, scale: 0.98 },
+show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7 } },
+};
+
+export default function ProfessionalTemplate() {
+return (
+<div className="min-h-screen bg-white text-slate-900 antialiased">
+{/* Header */}
+<header className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between border-b border-slate-200">
+<div className="font-serif font-bold text-xl">{businessName}</div>
+<nav className="hidden md:flex items-center gap-6 text-slate-700">
+<a href="#services" className="hover:text-slate-900 transition">Services</a>
+<a href="#why" className="hover:text-slate-900 transition">Why Us</a>
+<a href="#contact" className="hover:text-slate-900 transition">Contact</a>
+</nav>
+</header>
+
+  <main>
+    {/* HERO SPLIT */}
+    <motion.section initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="max-w-7xl mx-auto px-6 py-24 flex flex-col md:flex-row items-center gap-10">
+      <motion.div variants={floatIn} className="md:w-1/2">
+        <h1 className="font-serif font-bold text-5xl md:text-6xl leading-tight">
+          Expert Legal Guidance for Your Business
+        </h1>
+        <p className="mt-4 text-lg text-slate-700">
+          At LawBridge Advisors, we provide corporate legal solutions that ensure your business operates safely, efficiently, and confidently.
+        </p>
+        <div className="mt-6 flex flex-col sm:flex-row gap-4">
+          <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 text-white font-semibold shadow hover:scale-105 transition">
+            <Phone size={16} /> Contact Us
+          </a>
+          <a href="#services" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-slate-300 hover:bg-slate-50 transition">
+            Learn More
+          </a>
+        </div>
+      </motion.div>
+      <motion.div variants={floatIn} className="md:w-1/2 h-80 bg-gray-200 rounded-xl flex items-center justify-center">
+        <span className="text-slate-400">[Professional Image Placeholder]</span>
+      </motion.div>
+    </motion.section>
+
+    {/* SERVICES */}
+    <motion.section id="services" initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="max-w-7xl mx-auto px-6 py-16">
+      <div className="text-center mb-10">
+        <h2 className="font-serif text-3xl md:text-4xl font-bold">Our Expertise</h2>
+        <p className="mt-2 text-slate-600">Comprehensive legal services tailored for your business.</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {inferredServices.slice(0, 9).map((service, idx) => {
+          const icons = [Layers, Activity, Grid, Users, Layers, Activity, Grid, Users, Layers];
+          const descriptions = [
+            "Expert consultation on corporate legal matters.",
+            "Guidance and support on mergers and acquisitions.",
+            "Protect your intellectual property rights.",
+            "Drafting and reviewing contracts with precision.",
+            "Ensure compliance and minimize risks.",
+            "Support during litigation processes.",
+            "Employment law guidance for HR and management.",
+            "Advisory on regulatory requirements.",
+            "Structuring your business for long-term success.",
+          ];
+          const Icon = icons[idx % icons.length];
+          return (
+            <motion.div key={idx} variants={floatIn} whileHover={{ y: -4 }} className="bg-white rounded-2xl p-6 shadow-md border transition-transform">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-slate-900 text-white flex items-center justify-center shadow">
+                  <Icon size={20} />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-slate-900">{service}</h4>
+                  <p className="mt-2 text-sm text-slate-600">{descriptions[idx]}</p>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.section>
+
+    {/* WHY CHOOSE US */}
+    <motion.section id="why" initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="py-16 bg-slate-50">
+      <div className="max-w-7xl mx-auto px-6 text-center mb-10">
+        <h2 className="font-serif text-3xl md:text-4xl font-bold">Why Choose LawBridge?</h2>
+        <p className="mt-2 text-slate-600 max-w-2xl mx-auto">Professional, trustworthy, and experienced legal advisors for your business.</p>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { icon: Layers, title: "Trusted Advisors", desc: "Decades of combined experience in corporate law." },
+          { icon: Activity, title: "Efficient Solutions", desc: "Strategic and timely legal support." },
+          { icon: Users, title: "Client-Focused", desc: "We prioritize your business objectives." },
+        ].map((item, i) => (
+          <motion.div key={i} variants={floatIn} whileHover={{ y: -4 }} className="bg-white p-6 rounded-2xl shadow-md border">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-md bg-slate-900 text-white flex items-center justify-center">
+                <item.icon size={18} />
+              </div>
+              <div>
+                <h4 className="font-semibold text-slate-900">{item.title}</h4>
+                <p className="text-sm text-slate-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.section>
+
+    {/* CALL TO ACTION */}
+    <motion.section id="contact" initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionFade} className="py-16 bg-slate-900 text-white">
+      <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h3 className="font-serif text-3xl font-bold">Schedule a Consultation</h3>
+          <p className="mt-2 text-slate-200 max-w-md">Connect with our experienced team for personalized legal advice.</p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white text-white hover:bg-white hover:text-slate-900 transition">
+              <Mail size={16} /> Contact Us
+          </a>
+        </div>
+      </div>
+    </motion.section>
+  </main>
+
+  {/* FOOTER */}
+  <footer className="bg-slate-50 text-slate-700 mt-12">
+    <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <div className="font-serif font-bold text-lg">{businessName}</div>
+        <p className="mt-2 text-sm text-slate-600">{businessType}</p>
+        <p className="mt-4 text-sm text-slate-600">© {new Date().getFullYear()} {businessName}. All rights reserved.</p>
+        <div className="mt-4 flex items-center gap-3">
+          <a aria-label="Facebook" className="p-2 rounded-md bg-slate-200 hover:bg-slate-300 transition"><Facebook size={18} /></a>
+          <a aria-label="Instagram" className="p-2 rounded-md bg-slate-200 hover:bg-slate-300 transition"><Instagram size={18} /></a>
+          <a aria-label="Twitter" className="p-2 rounded-md bg-slate-200 hover:bg-slate-300 transition"><Twitter size={18} /></a>
+        </div>
+      </div>
+
+      <div>
+        <h4 className="font-semibold mb-3">Contact</h4>
+        <ul className="space-y-2 text-sm">
+          <li className="flex items-center gap-2"><Phone size={14} /> {phone}</li>
+          <li className="flex items-center gap-2"><Mail size={14} /> contact@lawbridge.example</li>
+          <li className="flex items-center gap-2"><MapPin size={14} /> {address}</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 className="font-semibold mb-3">Quick Links</h4>
+        <ul className="space-y-2 text-sm">
+          <li><a href="#services" className="hover:underline">Services</a></li>
+          <li><a href="#why" className="hover:underline">Why Us</a></li>
+          <li><a href="#contact" className="hover:underline">Contact</a></li>
+          <li><a className="hover:underline">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+);
+}
