@@ -1,6 +1,8 @@
 package com.example.nobsv2.stripe;
 
 
+import com.example.nobsv2.customization.CustomizationUsage;
+import com.example.nobsv2.customization.CustomizationUsageRepository;
 import com.example.nobsv2.security.CustomUser;
 import com.example.nobsv2.security.CustomUserRepository;
 import com.stripe.exception.StripeException;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 public class StripeService {
 
     private final CustomUserRepository userRepository;
+    private final CustomizationUsageRepository customizationUsageRepository;
     //price ids
     @Value("${stripe.price.free}")
     private String freePriceId;
@@ -145,6 +148,45 @@ public class StripeService {
         };
     }
 
+    public boolean canCustomizeWebsite(String username) {
+        CustomUser user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+        SubscriptionPlan plan = user.getSubscriptionPlan();
+
+        //only PRO and ENTERPRISE can customize
+        return plan == SubscriptionPlan.PRO || plan == SubscriptionPlan.ENTERPRISE;
+    }
+
+    public int getCustomizationMessagesRemaining(String username, Integer businessId) {
+        CustomUser user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+        SubscriptionPlan plan = user.getSubscriptionPlan();
+
+        if(!canCustomizeWebsite(username)){
+            return  0;
+        }
+
+        CustomizationUsage usage = customizationUsageRepository
+                .findByUsernameAndBusinessId(username, businessId)
+                .orElse(new CustomizationUsage(username, businessId, 0));
+
+        int limit = plan == SubscriptionPlan.PRO ? 10 : 50;
+
+        return Math.max(0 , limit - usage.getMessagesUsed());
+    }
+
+    // Decrement customization message count
+    public void decrementCustomizationMessages(String username, Integer businessId) {
+        CustomizationUsage usage = customizationUsageRepository
+                .findByUsernameAndBusinessId(username, businessId)
+                .orElse(new CustomizationUsage(username, businessId, 0));
+
+        usage.setMessagesUsed(usage.getMessagesUsed() + 1);
+        customizationUsageRepository.save(usage);
+
+        log.info("📊 User {} customization usage for business {}: {}",
+                username, businessId, usage.getMessagesUsed());
+    }
 
     public enum ActionType {
         SEARCH, GENERATE_WEBSITE, GENERATE_MESSAGE
