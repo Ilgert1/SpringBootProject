@@ -50,7 +50,12 @@ export default function TopRightDropdown() {
       </span>
                 )}
             >
-                {isSuperuser && <DropdownItem className="hover:bg-white/15">Dashboard</DropdownItem>}
+                {isSuperuser &&
+                    <DropdownItem
+                        onClick={() => router.push("/dashboard")}
+                        className="hover:bg-white/15">
+                        Dashboard
+                </DropdownItem>}
                 <DropdownItem className="hover:bg-white/15"
                 onClick={() => router.push("/cart")}
                 >Cart
