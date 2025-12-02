@@ -56,6 +56,15 @@ public class SecurityConfiguaration {
                         .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
                         .requestMatchers("/api/businesses/*/generated-code").permitAll()
                         .requestMatchers("/api/businesses/*/render").permitAll()
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/refresh",
+                                "/api/auth/forgot-password",
+                                "/api/auth/reset-password",
+                                "/api/auth/validate-reset-token",
+                                "/api/render/**"
+                        ).permitAll()
                         .requestMatchers("/api/businesses/with-generated-website").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/api/businesses/with-generated-website").permitAll()
                         .requestMatchers("/api/leads/**").authenticated()

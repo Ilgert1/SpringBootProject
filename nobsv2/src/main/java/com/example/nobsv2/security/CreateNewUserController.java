@@ -1,5 +1,6 @@
 package com.example.nobsv2.security;
 import com.example.nobsv2.product.validators.PasswordValidator;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,11 +22,13 @@ public class CreateNewUserController {
     }
 
     @PostMapping("/createnewuser")
-    public ResponseEntity<String> createNewUser(@RequestBody CustomUser user) {
+    public ResponseEntity<String> createNewUser(@Valid @RequestBody CustomUser user) {
         // Validate username
         if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Username is required.");
         }
+
+
 
         if (user.getUsername().length() < 3) {
             return ResponseEntity.badRequest().body("Username must be at least 3 characters long.");
@@ -46,6 +49,7 @@ public class CreateNewUserController {
         try {
             // Create and save new user
             CustomUser newUser = new CustomUser(
+                    user.getEmail(),
                     user.getUsername(),
                     encoder.encode(user.getPassword()),
                     "ROLE_BASIC"

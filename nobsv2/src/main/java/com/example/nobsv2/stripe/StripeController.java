@@ -1,17 +1,25 @@
 package com.example.nobsv2.stripe;
 
+import com.example.nobsv2.ai.dto.ClaudeDTO;
+import com.example.nobsv2.security.CustomUserRepository;
+import com.example.nobsv2.security.MeController;
 import com.example.nobsv2.user.UserService;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Balance;
+import com.stripe.model.Customer;
+import com.stripe.model.Subscription;
 import com.stripe.model.checkout.Session;
+import com.stripe.param.CustomerListParams;
+import com.stripe.param.SubscriptionListParams;
 import com.stripe.param.checkout.SessionRetrieveParams;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/stripe")
@@ -20,6 +28,7 @@ public class StripeController {
 
     private final StripeService stripeService;
     private final UserService userService;
+    private final CustomUserRepository customUserRepository;
 
     // Add these @Value fields
     @Value("${stripe.price.free}")
@@ -35,9 +44,87 @@ public class StripeController {
     private String enterprisePriceId;
 
     // Constructor injection (can't use @RequiredArgsConstructor with @Value)
-    public StripeController(StripeService stripeService, UserService userService) {
+    public StripeController(StripeService stripeService, UserService userService, CustomUserRepository customUserRepository) {
         this.stripeService = stripeService;
         this.userService = userService;
+        this.customUserRepository = customUserRepository;
+    }
+
+    @GetMapping("/v1/customers")
+    public ResponseEntity<List<StripeCustomerInfoDto>> currentUsers() {
+        try {
+            CustomerListParams customerParams = CustomerListParams.builder()
+                    .setLimit(100L) // adjust as needed
+                    .build();
+
+            Iterable<Customer> customers = Customer.list(customerParams).autoPagingIterable();
+
+            List<StripeCustomerInfoDto> result = new ArrayList<>();
+
+            for (Customer c : customers) {
+                if (c == null) continue;
+
+                String customerId = c.getId();
+                String email = c.getEmail();
+
+                // Default when no subscriptions exist
+                String subscriptionStatus = "none";
+
+                // List subscriptions for this customer and pick the most recently created one
+                SubscriptionListParams subsParams = SubscriptionListParams.builder()
+                        .setCustomer(customerId)
+                        .setLimit(100L)
+                        .build();
+
+                Iterable<Subscription> subscriptions = Subscription.list(subsParams).autoPagingIterable();
+
+                long latestCreated = -1L;
+                for (Subscription s : subscriptions) {
+                    if (s == null) continue;
+                    Long created = s.getCreated();
+                    if (created != null && created > latestCreated) {
+                        latestCreated = created;
+                        subscriptionStatus = s.getStatus(); // active, past_due, canceled, incomplete, etc.
+                    }
+                }
+
+                result.add(new StripeCustomerInfoDto(customerId, email, subscriptionStatus));
+            }
+
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            // log the error (use your logger)
+            // log.error("Error fetching Stripe customers/subscriptions", e);
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/balance")
+    public ResponseEntity<BalanceResponse> getBalance() {
+
+        try {
+            // Retrieve the actual Stripe balance
+            Balance balance = Balance.retrieve();
+
+            // Stripe returns two types of balance amounts:
+            // - available
+            // - pending
+            Long available = balance.getAvailable().get(0).getAmount();
+            Long pending = balance.getPending().get(0).getAmount();
+
+            return ResponseEntity.ok(
+                    new BalanceResponse(
+                            "Available: " + available + ", Pending: " + pending
+                    )
+            );
+
+        } catch (Exception e) {
+            log.error("Unable to get balance", e);
+            return ResponseEntity.status(500).body(
+                    new BalanceResponse("Error retrieving balance")
+            );
+        }
     }
 
     @PostMapping("/create-checkout-session")
@@ -110,4 +197,8 @@ public class StripeController {
     public record VerifyResponse(boolean success, String message) {}
     public record CheckoutRequest(SubscriptionPlan plan){}
     public record CheckoutResponse(String checkoutUrl){}
+    //new
+    public record BalanceRequest(String user){}
+    public record BalanceResponse(String balance){}
+
 }

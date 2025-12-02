@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import com.example.nobsv2.stripe.SubscriptionPlan;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,10 @@ public class CustomUser {
     @Column(name = "username")
     private String username;
 
+    //NEW: email column
+    @Column(unique = true, name = "email")
+    @Email( message = "Invalid email format")
+    private String email;
 
     @Column(name = "password")
     private String password;
@@ -57,7 +62,8 @@ public class CustomUser {
     @Column(name = "usage_reset_date")
     private LocalDateTime usageResetDate;
 
-    public CustomUser(String username, String password, String roles) {
+    public CustomUser(String email , String username, String password, String roles) {
+        this.email = email;
         this.username = username;
         this.password = password;
         this.roles = roles;
