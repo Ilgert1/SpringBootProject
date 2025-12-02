@@ -21,6 +21,7 @@ export default function ForgotPasswordPage() {
         try {
             const response = await api<{ message: string }>("/api/auth/forgot-password", {
                 method: "POST",
+                credentials:"include",
                 body: JSON.stringify({ email }),
             });
 
