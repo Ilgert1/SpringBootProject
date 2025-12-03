@@ -57,13 +57,16 @@ public class SecurityConfiguaration {
                         .requestMatchers("/api/businesses/*/generated-code").permitAll()
                         .requestMatchers("/api/businesses/*/render").permitAll()
                         .requestMatchers(
-                                "/api/auth/register",
-                                "/api/auth/login",
-                                "/api/auth/refresh",
+                                "/auth/login",
+                                "/auth/refresh",
+                                "/auth/logout",
+                                "/createnewuser",
+                                "/health"
+                        ).permitAll()
+                        .requestMatchers(
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
-                                "/api/auth/validate-reset-token",
-                                "/api/render/**"
+                                "/api/auth/validate-reset-token"
                         ).permitAll()
                         .requestMatchers("/api/businesses/with-generated-website").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/api/businesses/with-generated-website").permitAll()
