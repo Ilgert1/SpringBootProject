@@ -5,6 +5,7 @@ import com.example.nobsv2.email.EmailService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,8 @@ public class PasswordResetController {
     private final CustomUserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired(required = false)
     private final EmailService emailService;
 
 
