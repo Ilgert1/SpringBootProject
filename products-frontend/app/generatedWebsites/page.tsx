@@ -31,7 +31,7 @@ export default function GeneratedWebsitesPage() {
                     {
                         cache: "no-store",
                         headers: {
-                            'Authorization': `Bearer ${token}`  // ✅ Add this!
+                            'Authorization': `Bearer ${token}`
                         }
                     }
                 );
@@ -92,7 +92,7 @@ export default function GeneratedWebsitesPage() {
                     {businesses.map((b) => (
                         <div
                             key={b.id}
-                            className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow flex flex-col justify-between"
+                            className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-[1.03] transition-transform transition-shadow flex flex-col justify-between border border-transparent hover:border-blue-200"
                         >
                             {/* Business info */}
                             <div>
@@ -102,16 +102,19 @@ export default function GeneratedWebsitesPage() {
                                 {b.address && (
                                     <p className="text-gray-600 text-sm mb-1">{b.address}</p>
                                 )}
-                                {b.website && (
+                                {b.website === 'NO WEBSITE' ? (
+                                    <span className="text-gray-500 text-sm mb-1 block">NO WEBSITE</span>
+                                ) : (
                                     <a
                                         href={b.website}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="text-blue-600 text-sm hover:underline mb-1 block"
                                     >
-                                        {b.website}
+                                        GO TO WEBSITE
                                     </a>
                                 )}
+
                                 {b.phone && (
                                     <p className="text-gray-600 text-sm mb-1">Phone: {b.phone}</p>
                                 )}
