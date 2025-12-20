@@ -11,6 +11,7 @@ export type business = {
     business_status?: string;
     createdAt?:string;
     businessStatus?: string;
+    generatedWebsiteCode?: string;
 
 
 }
