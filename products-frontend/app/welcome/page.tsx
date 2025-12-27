@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import {router} from "next/client";
 import {motion} from "framer-motion";
+import PlatformPage from "@/app/platform/page";
 
 export default function WelcomePage() {
     const [navOpen, setNavOpen] = useState(false);
@@ -93,10 +94,9 @@ export default function WelcomePage() {
                 )}
             </nav>
 
-            {/*What we do*/}
-            <div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-20">
+            {/*<div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-20">
                 <div className="group relative w-48">
-                    {/* Visible tab */}
+
                     <Link href={'/platform'} className="bg-blue-600 text-white px-4 py-2 rounded-xl cursor-pointer text-lg font-semibold shadow-lg shadow-blue-600/20">
                         {text.split("").map((char, i) => (
                             <motion.span
@@ -120,9 +120,9 @@ export default function WelcomePage() {
 
                     </Link>
 
-                    {/* Hidden panel */}
+
                 </div>
-            </div>
+            </div>*/}
 
             {/* HERO section */}
             <section className="relative z-10 flex flex-col items-center justify-center text-center min-h-screen px-6 py-32">
@@ -158,6 +158,7 @@ export default function WelcomePage() {
                         </Link>
                     </div>
                 </div>
+                <PlatformPage></PlatformPage>
             </section>
 
             {/* FOOTER */}

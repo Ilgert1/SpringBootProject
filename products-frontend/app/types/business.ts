@@ -14,4 +14,5 @@ export type business = {
     generatedWebsiteCode?: string;
 
 
+
 }
