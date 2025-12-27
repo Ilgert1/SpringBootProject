@@ -75,22 +75,23 @@ export default function AnalyticsPage() {
     };
 
     // Helper: Get primary business type from types array
-    const getPrimaryType = (types?: string): string => {
-        if (!types) return 'Other';
-        const typeArray = types.split(',').map(t => t.trim());
-        // Filter out generic types
-        const filtered = typeArray.filter(t =>
+    const getPrimaryType = (types?: string[]): string => {
+        if (!types || types.length === 0) return 'Other';
+
+        const filtered = types.filter(t =>
             !['point_of_interest', 'establishment'].includes(t.toLowerCase())
         );
+
         if (filtered.length > 0) {
-            // Capitalize and format
             return filtered[0]
                 .split('_')
                 .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ');
         }
+
         return 'Other';
     };
+
 
     // Calculate metrics
     const totalLeads = leads.length;
@@ -372,7 +373,7 @@ export default function AnalyticsPage() {
                                     cx="50%"
                                     cy="50%"
                                     labelLine={false}
-                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                    label={({ name, percent = 0}) => `${name} ${(percent * 100).toFixed(0)}%`}
                                     outerRadius={100}
                                     fill="#8884d8"
                                     dataKey="value"
