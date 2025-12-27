@@ -75,22 +75,27 @@ export default function AnalyticsPage() {
     };
 
     // Helper: Get primary business type from types array
-    const getPrimaryType = (types?: string[]): string => {
-        if (!types || types.length === 0) return 'Other';
+    const getPrimaryType = (types?: unknown): string => {
+        if (!Array.isArray(types) || types.length === 0) {
+            return 'Other';
+        }
 
-        const filtered = types.filter(t =>
-            !['point_of_interest', 'establishment'].includes(t.toLowerCase())
+        const filtered = types.filter(
+            (t): t is string =>
+                typeof t === 'string' &&
+                !['point_of_interest', 'establishment'].includes(t.toLowerCase())
         );
 
         if (filtered.length > 0) {
             return filtered[0]
                 .split('_')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
                 .join(' ');
         }
 
         return 'Other';
     };
+
 
 
     // Calculate metrics
