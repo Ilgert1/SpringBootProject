@@ -75,7 +75,7 @@ export default function AnalyticsPage() {
     };
 
     // Helper: Get primary business type from types array
-    const getPrimaryType = (types?: unknown): string => {
+    const getPrimaryType = (types?: string[] | undefined): string => {
         if (!Array.isArray(types) || types.length === 0) {
             return 'Other';
         }
