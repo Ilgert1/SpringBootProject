@@ -293,10 +293,10 @@ export default function LeadsList({ title, data , onActionComplete}: LeadsListPr
                         {Array.isArray(b.types) && b.types.length > 0 && (
                             <div className="mt-3 pt-3 border-t border-gray-100">
                                 <div className="flex flex-wrap gap-1">
-                                    {b.types.slice(0, 3).map((type, idx) => (
+                                    {b.types && b.types.split(',').slice(0, 3).map((type, idx) => (
                                         <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
-                        {type.replace(/_/g, ' ')}
-                    </span>
+        {type.trim().replace(/_/g, ' ')}
+    </span>
                                     ))}
                                 </div>
                             </div>
