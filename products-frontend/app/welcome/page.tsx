@@ -18,6 +18,19 @@ export default function WelcomePage() {
 
     return (
         <main className="relative min-h-screen bg-white overflow-hidden flex flex-col">
+            <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                    backgroundImage: `
+        radial-gradient(circle at 1px 1px, rgba(99,102,241,0.35) 1px, transparent 0),
+        radial-gradient(circle at 1px 1px, rgba(236,72,153,0.35) 1px, transparent 0)
+      `,
+                    backgroundSize: "24px 24px",
+                    backgroundPosition: "0 0, 12px 12px",
+                    maskImage: "linear-gradient(to right, black, transparent)",
+                    WebkitMaskImage: "linear-gradient(to right, black, transparent)",
+                }}
+            />
             {/* NAV */}
             <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
                 <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">

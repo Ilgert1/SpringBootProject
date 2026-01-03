@@ -6,7 +6,7 @@ export type business = {
     phone?: string;
     rating?: number;
     total_ratings?: number;
-    types?: string[];
+    types?: string;
     place_id?: string;
     business_status?: string;
     createdAt?:string;

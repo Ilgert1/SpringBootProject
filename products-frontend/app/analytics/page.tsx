@@ -74,28 +74,30 @@ export default function AnalyticsPage() {
         return parts[0] || 'Unknown';
     };
 
-    // Helper: Get primary business type from types array
-    const getPrimaryType = (types?: string[] | undefined): string => {
-        if (!Array.isArray(types) || types.length === 0) {
+    // Helper: Get primary business type from types string
+    const getPrimaryType = (types?: string): string => {
+        if (!types || typeof types !== 'string') {
             return 'Other';
         }
 
-        const filtered = types.filter(
-            (t): t is string =>
-                typeof t === 'string' &&
-                !['point_of_interest', 'establishment'].includes(t.toLowerCase())
+        // Split comma-separated string into array
+        const typeArray = types.split(',').map(t => t.trim());
+
+        // Filter out generic types
+        const filtered = typeArray.filter(t =>
+            !['point_of_interest', 'establishment'].includes(t.toLowerCase())
         );
 
         if (filtered.length > 0) {
+            // Capitalize and format the first non-generic type
             return filtered[0]
                 .split('_')
-                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ');
         }
 
         return 'Other';
     };
-
 
 
     // Calculate metrics
